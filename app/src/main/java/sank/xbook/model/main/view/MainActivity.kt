@@ -3,11 +3,9 @@ package sank.xbook.model.main.view
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
-import android.support.v4.widget.DrawerLayout
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import com.nineoldandroids.view.ViewHelper
 import kotlinx.android.synthetic.main.activity_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -21,13 +19,14 @@ import sank.xbook.model.community.ClassifyFragment
 import sank.xbook.model.main.presenter.MainPresenter
 import sank.xbook.base.DrawerLayoutOpen
 import sank.xbook.R
+import sank.xbook.Utils.view.ResideLayout
 
 
 class MainActivity : BaseActivity() , IView, View.OnClickListener {
     /**
      * 侧滑布局
      */
-    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var drawerLayout: ResideLayout
     private lateinit var main_left: LinearLayout
 
     /**
@@ -78,55 +77,14 @@ class MainActivity : BaseActivity() , IView, View.OnClickListener {
         classify = findViewById(R.id.classify)    //社区
         classify.setOnClickListener(this)
 
-
-        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
-            override fun onDrawerStateChanged(p0: Int) {
-
-            }
-
-            override fun onDrawerSlide(p0: View, p1: Float) {
-                slideAnim(p0,p1)
-            }
-
-            override fun onDrawerClosed(p0: View) {
-
-            }
-
-            override fun onDrawerOpened(p0: View) {
-
-            }
-
-        })
-    }
-
-    /**
-     * 侧滑菜单动画
-     * slideOffset:示菜单项滑出来的比例，打开菜单时取值为0->1,关闭菜单时取值为1->0
-     */
-    private fun slideAnim(drawerView:View,slideOffset:Float){
-        val contentView = drawerLayout.getChildAt(0)
-
-        val scale = 1 - slideOffset
-        val rightScale = 1F//0.8f + scale * 0.2f
-        val leftScale = 1F// - 0.3f * scale
-
-        ViewHelper.setScaleX(drawerView, leftScale)
-        ViewHelper.setScaleY(drawerView, leftScale)
-        ViewHelper.setAlpha(drawerView, 0.6f + 0.4f * (1 - scale))
-        ViewHelper.setTranslationX(contentView, drawerView.measuredWidth * (1 - scale))
-        ViewHelper.setPivotX(contentView, 0F)
-        ViewHelper.setPivotY(contentView, (contentView.measuredHeight / 2).toFloat())
-        contentView.invalidate()
-        ViewHelper.setScaleX(contentView, rightScale)
-        ViewHelper.setScaleY(contentView, rightScale)
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     fun drawerLayoutMessage(message : DrawerLayoutOpen){
-        if(!drawerLayout.isDrawerOpen(main_left)) {
-            drawerLayout.openDrawer(main_left)
+        if(!drawerLayout.isOpen) {
+            drawerLayout.openPane()
         }else{
-            drawerLayout.closeDrawer(main_left)
+            drawerLayout.closePane()
         }
     }
 
@@ -192,6 +150,21 @@ class MainActivity : BaseActivity() , IView, View.OnClickListener {
     override fun onFailure() {
 
     }
+
+
+//    fun onBackPressed() {
+//        if (mResideLayout.isOpen()) {
+//            mResideLayout.closePane()
+//        } else {
+//            val secondTime = System.currentTimeMillis()
+//            if (secondTime - fristTime < 2000) {
+//                finish()
+//            } else {
+//                SnackBarUtils.makeShort(window.decorView, "再点击一次退出应用").show()
+//                fristTime = System.currentTimeMillis()
+//            }
+//        }
+//    }
 
     override fun onDestroy() {
         if(mainPresenter != null){
