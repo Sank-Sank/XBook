@@ -9,6 +9,8 @@ class MyApp :  Application() {
             return mApplication
         }
     }
+
+
     override fun onCreate() {
         super.onCreate()
         mApplication = this

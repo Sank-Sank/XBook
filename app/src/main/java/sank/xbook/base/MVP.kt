@@ -7,13 +7,13 @@ package sank.xbook.base
  *  @Time 2019/3/11
  */
 interface IView {
-    fun onSuccess()
+    fun onSuccess(data:BookBean)
     fun onFailure()
 }
 
 interface IPresenter{
     fun requestNet()
-    fun requestSuccess()
+    fun requestSuccess(data:BookBean)
     fun requestFailure()
 }
 

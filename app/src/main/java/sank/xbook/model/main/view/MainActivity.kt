@@ -14,15 +14,14 @@ import sank.xbook.base.BaseActivity
 import sank.xbook.base.IPresenter
 import sank.xbook.base.IView
 import sank.xbook.model.book_mall.BookMallFragment
-import sank.xbook.model.book_rack.BookRackFragment
+import sank.xbook.model.book_rack.veiw.BookRackFragment
 import sank.xbook.model.community.ClassifyFragment
-import sank.xbook.model.main.presenter.MainPresenter
 import sank.xbook.base.DrawerLayoutOpen
 import sank.xbook.R
 import sank.xbook.Utils.view.ResideLayout
 
 
-class MainActivity : BaseActivity() , IView, View.OnClickListener {
+class MainActivity : BaseActivity() , View.OnClickListener {
     /**
      * 侧滑布局
      */
@@ -44,16 +43,11 @@ class MainActivity : BaseActivity() , IView, View.OnClickListener {
     private lateinit var book_mall:LinearLayout
     private lateinit var classify:LinearLayout
 
-    /**
-     * p曾引用
-     */
-    private var mainPresenter: IPresenter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         EventBus.getDefault().register(this)
-        mainPresenter = MainPresenter(this)
         /**
          *初始化布局
          */
@@ -143,14 +137,6 @@ class MainActivity : BaseActivity() , IView, View.OnClickListener {
         ft.commit()
     }
 
-    override fun onSuccess() {
-
-    }
-
-    override fun onFailure() {
-
-    }
-
 
 //    fun onBackPressed() {
 //        if (mResideLayout.isOpen()) {
@@ -167,9 +153,6 @@ class MainActivity : BaseActivity() , IView, View.OnClickListener {
 //    }
 
     override fun onDestroy() {
-        if(mainPresenter != null){
-            mainPresenter = null
-        }
         EventBus.getDefault().unregister(this)
         super.onDestroy()
     }
