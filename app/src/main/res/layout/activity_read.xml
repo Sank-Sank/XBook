@@ -6,7 +6,7 @@
     tools:context=".model.read_book.view.ReadActivity">
 
 
-    <RelativeLayout
+    <sank.xbook.model.read_book.page.PageView
         android:id="@+id/pageView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

@@ -1,5 +1,6 @@
 package sank.xbook.model.read_book.page;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -7,12 +8,13 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
+import android.util.Log;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -20,11 +22,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import sank.xbook.R;
 import sank.xbook.base.ChapterContentBean;
-import sank.xbook.base.ChaptersBean;
+import sank.xbook.base.ChaptersDetailsBean;
 import sank.xbook.base.MyApp;
-import sank.xbook.model.read_book.IOUtils;
 import sank.xbook.model.read_book.ReadSettingManager;
 import sank.xbook.model.read_book.ScreenUtils;
 import sank.xbook.model.read_book.StringUtils;
@@ -34,7 +41,6 @@ import sank.xbook.model.read_book.StringUtils;
  */
 
 public abstract class PageLoader {
-    private static final String TAG = "PageLoader";
 
     //当前页面的状态
     public static final int STATUS_LOADING = 1;  //正在加载
@@ -51,11 +57,11 @@ public abstract class PageLoader {
     private static final int DEFAULT_TIP_SIZE = 12;
     private static final int EXTRA_TITLE_SIZE = 4;
     //当前章节列表
-    protected List<TxtChapter> mChapterList;
+    List<ChaptersDetailsBean> mChapterList;
     //书本对象
-    protected ChaptersBean mCollBook;
+    //protected ChaptersBean mCollBook;
     //监听器
-    protected OnPageChangeListener mPageChangeListener;
+    OnPageChangeListener mPageChangeListener;
 
     //页面显示类
     private PageView mPageView;
@@ -93,7 +99,7 @@ public abstract class PageLoader {
     //当前章
     protected int mCurChapterPos = 0;
     //书本是否打开
-    protected boolean isBookOpen = false;
+//    protected boolean isBookOpen = false;
 
     private Disposable mPreLoadDisp;
     //上一章的记录
@@ -212,9 +218,9 @@ public abstract class PageLoader {
     /****************************** public method***************************/
     //跳转到上一章
     public int skipPreChapter() {
-        if (!isBookOpen) {
-            return mCurChapterPos;
-        }
+//        if (!isBookOpen) {
+//            return mCurChapterPos;
+//        }
 
         //载入上一章。
         if (prevChapter()) {
@@ -226,9 +232,9 @@ public abstract class PageLoader {
 
     //跳转到下一章
     public int skipNextChapter() {
-        if (!isBookOpen) {
-            return mCurChapterPos;
-        }
+//        if (!isBookOpen) {
+//            return mCurChapterPos;
+//        }
 
         //判断是否达到章节的终止点
         if (nextChapter()) {
@@ -275,13 +281,13 @@ public abstract class PageLoader {
 
     //自动翻到上一章
     public boolean autoPrevPage() {
-        if (!isBookOpen) return false;
+//        if (!isBookOpen) return false;
         return mPageView.autoPrevPage();
     }
 
     //自动翻到下一章
     public boolean autoNextPage() {
-        if (!isBookOpen) return false;
+//        if (!isBookOpen) return false;
         return mPageView.autoNextPage();
     }
 
@@ -302,7 +308,7 @@ public abstract class PageLoader {
 
     //设置文字大小
     public void setTextSize(int textSize) {
-        if (!isBookOpen) return;
+//        if (!isBookOpen) return;
 
         //设置textSize
         mTextSize = textSize;
@@ -325,7 +331,7 @@ public abstract class PageLoader {
         //如果当前为完成状态。
         if (mStatus == STATUS_FINISH) {
             //重新计算页面
-            mCurPageList = loadPageList(mCurChapterPos);
+            //mCurPageList = loadPageList(mCurChapterPos);
 
             //防止在最后一页，通过修改字体，以至于页面数减少导致崩溃的问题
             if (mCurPage.position >= mCurPageList.size()) {
@@ -352,6 +358,7 @@ public abstract class PageLoader {
     }
 
     //绘制背景
+    @SuppressLint("ResourceAsColor")
     public void setBgColor(int theme) {
         if (isNightMode && theme == ReadSettingManager.NIGHT_MODE) {
             mTextColor = ContextCompat.getColor(MyApp.Companion.getInstance(), R.color.color_fff_99);
@@ -385,13 +392,13 @@ public abstract class PageLoader {
             }
         }
 
-        if (isBookOpen) {
-            //设置参数
-            mPageView.setBgColor(mPageBg);
-            mTextPaint.setColor(mTextColor);
-            //重绘
-            mPageView.refreshPage();
-        }
+//        if (isBookOpen) {
+        //设置参数
+//        mPageView.setBgColor(mPageBg);
+//        mTextPaint.setColor(R.color.color_fff_99);
+//        //重绘
+//        mPageView.refreshPage();
+//        }
     }
 
     //翻页动画
@@ -425,20 +432,20 @@ public abstract class PageLoader {
 
     //保存阅读记录
     //public void saveRecord() {
-        //书没打开，就没有记录
-        //if (!isBookOpen) return;
+    //书没打开，就没有记录
+    //if (!isBookOpen) return;
 
 //        mBookRecord.setBookId(mCollBook.get_id());
 //        mBookRecord.setChapter(mCurChapterPos);
 //        mBookRecord.setPagePos(mCurPage.position);
 
-        //存储到数据库
-        //BookRecordHelper.getsInstance().saveRecordBook(mBookRecord);
+    //存储到数据库
+    //BookRecordHelper.getsInstance().saveRecordBook(mBookRecord);
     //}
 
     //打开书本，初始化书籍
-    public void openBook(ChaptersBean collBook) {
-        mCollBook = collBook;
+    public void openBook(List<ChaptersDetailsBean> chapters) {
+        mChapterList = chapters;
         //init book record
 
         //从数据库取阅读数据
@@ -453,28 +460,28 @@ public abstract class PageLoader {
     }
 
     //打开具体章节
-    public void openChapter() {
-        mCurPageList = loadPageList(mCurChapterPos);
+    public void openChapter(ChaptersDetailsBean chaptersDetailsBean) {
+        mCurPageList = loadPageList(chaptersDetailsBean);
         //进行预加载
-        preLoadNextChapter();
+        //preLoadNextChapter();
         //加载完成
         mStatus = STATUS_FINISH;
         //获取制定页面
-        if (!isBookOpen) {
-            isBookOpen = true;
-            //可能会出现当前页的大小大于记录页的情况。
-            //int position = mBookRecord.getPagePos();
+//        if (!isBookOpen) {
+//            isBookOpen = true;
+        //可能会出现当前页的大小大于记录页的情况。
+//        int position = mBookRecord.getPagePos();
 //            if (position >= mCurPageList.size()) {
 //                position = mCurPageList.size() - 1;
 //            }
-//            mCurPage = getCurPage(position);
-            mCancelPage = mCurPage;
-            if (mPageChangeListener != null) {
-                mPageChangeListener.onChapterChange(mCurChapterPos);
-            }
-        } else {
-            mCurPage = getCurPage(0);
+        mCurPage = getCurPage(0);
+        mCancelPage = mCurPage;
+        if (mPageChangeListener != null) {
+            mPageChangeListener.onChapterChange(mCurChapterPos);
         }
+//        } else {
+//            mCurPage = getCurPage(0);
+//        }
 
         mPageView.drawCurPage(false);
     }
@@ -488,7 +495,7 @@ public abstract class PageLoader {
 
     //清除记录，并设定是否缓存数据
     public void closeBook() {
-        isBookOpen = false;
+//        isBookOpen = false;
         mPageView = null;
         if (mPreLoadDisp != null) {
             mPreLoadDisp.dispose();
@@ -500,121 +507,134 @@ public abstract class PageLoader {
     public abstract void setChapterList(List<ChapterContentBean> bookChapters);
 
     @Nullable
-    protected abstract List<TxtPage> loadPageList(int chapter);
+    protected abstract List<TxtPage> loadPageList(ChaptersDetailsBean chapter);
 
     /***********************************default method***********************************************/
     //通过流获取Page的方法
-    List<TxtPage> loadPages(TxtChapter chapter, BufferedReader br) {
+    List<TxtPage> loadPages(final ChaptersDetailsBean chapter) {
         //生成的页面
-        List<TxtPage> pages = new ArrayList<>();
-        //使用流的方式加载
-        List<String> lines = new ArrayList<>();
-        int rHeight = mVisibleHeight; //由于匹配到最后，会多删除行间距，所以在这里多加个行间距
-        int titleLinesCount = 0;
-        boolean isTitle = true; //不存在没有 Title 的情况，所以默认设置为 true。
-        String paragraph = chapter.getTitle();//默认展示标题
-        try {
-            while (isTitle || (paragraph = br.readLine()) != null) {
+        final List<TxtPage> pages = new ArrayList<>();
+        final List<String> lines = new ArrayList<>();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://www.xyxhome.cn/book/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(new OkHttpClient())
+                .build();
+        RequestChapterAPI api = retrofit.create(RequestChapterAPI.class);
+        Call<ChapterContentBean> call = api.getChapter(chapter.getId());
+        call.enqueue(new Callback<ChapterContentBean>() {
+            @Override
+            public void onResponse(@NonNull Call<ChapterContentBean> call, Response<ChapterContentBean> response) {
+                Log.e("TAG","response.body() == " + response.body());
+                if (response.body() != null) {
+                    String content = response.body().getContent();
+                    int rHeight = mVisibleHeight; //由于匹配到最后，会多删除行间距，所以在这里多加个行间距
+                    int titleLinesCount = 0;
+                    boolean isTitle = true; //不存在没有 Title 的情况，所以默认设置为 true。
+                    String paragraph = chapter.getChapter();//默认展示标题
 
-                //重置段落
-                if (!isTitle) {
-                    paragraph = paragraph.replaceAll("\\s", "");
-                    //如果只有换行符，那么就不执行
-                    if (paragraph.equals("")) continue;
-                    paragraph = StringUtils.halfToFull("  " + paragraph + "\n");
-                } else {
-                    //设置 title 的顶部间距
-                    rHeight -= mTitlePara;
-                }
+                    while (isTitle || (content.length() <= 0)) {
 
-                int wordCount = 0;
-                String subStr = null;
-                while (paragraph.length() > 0) {
-                    //当前空间，是否容得下一行文字
-                    if (isTitle) {
-                        rHeight -= mTitlePaint.getTextSize();
-                    } else {
-                        rHeight -= mTextPaint.getTextSize();
+                        //重置段落
+                        if (!isTitle) {
+                            paragraph = paragraph.replaceAll("\\s", "");
+                            //如果只有换行符，那么就不执行
+                            if (paragraph.equals("")) continue;
+                            paragraph = StringUtils.halfToFull("  " + paragraph + "\n");
+                        } else {
+                            //设置 title 的顶部间距
+                            rHeight -= mTitlePara;
+                        }
+
+                        int wordCount = 0;
+                        String subStr = null;
+                        while (paragraph.length() > 0) {
+                            //当前空间，是否容得下一行文字
+                            if (isTitle) {
+                                rHeight -= mTitlePaint.getTextSize();
+                            } else {
+                                rHeight -= mTextPaint.getTextSize();
+                            }
+
+                            //一页已经填充满了，创建 TextPage
+                            if (rHeight < 0) {
+                                //创建Page
+                                TxtPage page = new TxtPage();
+                                page.position = pages.size();
+                                page.title = chapter.getChapter();
+                                page.lines = new ArrayList<>(lines);
+                                page.titleLines = titleLinesCount;
+                                pages.add(page);
+                                //重置Lines
+                                lines.clear();
+                                rHeight = mVisibleHeight;
+                                titleLinesCount = 0;
+                                continue;
+                            }
+
+                            //测量一行占用的字节数
+                            if (isTitle) {
+                                wordCount = mTitlePaint.breakText(paragraph, true, mVisibleWidth, null);
+                            } else {
+                                wordCount = mTextPaint.breakText(paragraph, true, mVisibleWidth, null);
+                            }
+
+                            subStr = content.substring(0, wordCount);
+                            if (!subStr.equals("\n")) {
+                                //将一行字节，存储到lines中
+                                lines.add(subStr);
+
+                                //设置段落间距
+                                if (isTitle) {
+                                    titleLinesCount += 1;
+                                    rHeight -= mTitleInterval;
+                                } else {
+                                    rHeight -= mTextInterval;
+                                }
+                            }
+                            //裁剪
+                            content = content.substring(wordCount);
+                        }
+
+                        //增加段落的间距
+                        if (!isTitle && lines.size() != 0) {
+                            rHeight = rHeight - mTextPara + mTextInterval;
+                        }
+
+                        if (isTitle) {
+                            rHeight = rHeight - mTitlePara + mTitleInterval;
+                            isTitle = false;
+                        }
                     }
 
-                    //一页已经填充满了，创建 TextPage
-                    if (rHeight < 0) {
+                    if (lines.size() != 0) {
                         //创建Page
                         TxtPage page = new TxtPage();
                         page.position = pages.size();
-                        page.title = chapter.getTitle();
+                        page.title = chapter.getChapter();
                         page.lines = new ArrayList<>(lines);
                         page.titleLines = titleLinesCount;
                         pages.add(page);
                         //重置Lines
                         lines.clear();
-                        rHeight = mVisibleHeight;
-                        titleLinesCount = 0;
-                        continue;
                     }
 
-                    //测量一行占用的字节数
-                    if (isTitle) {
-                        wordCount = mTitlePaint.breakText(paragraph, true, mVisibleWidth, null);
-                    } else {
-                        wordCount = mTextPaint.breakText(paragraph, true, mVisibleWidth, null);
+                    //可能出现内容为空的情况
+                    if (pages.size() == 0) {
+                        TxtPage page = new TxtPage();
+                        page.lines = new ArrayList<>(1);
+                        pages.add(page);
+
+                        mStatus = STATUS_EMPTY;
                     }
-
-                    subStr = paragraph.substring(0, wordCount);
-                    if (!subStr.equals("\n")) {
-                        //将一行字节，存储到lines中
-                        lines.add(subStr);
-
-                        //设置段落间距
-                        if (isTitle) {
-                            titleLinesCount += 1;
-                            rHeight -= mTitleInterval;
-                        } else {
-                            rHeight -= mTextInterval;
-                        }
-                    }
-                    //裁剪
-                    paragraph = paragraph.substring(wordCount);
-                }
-
-                //增加段落的间距
-                if (!isTitle && lines.size() != 0) {
-                    rHeight = rHeight - mTextPara + mTextInterval;
-                }
-
-                if (isTitle) {
-                    rHeight = rHeight - mTitlePara + mTitleInterval;
-                    isTitle = false;
                 }
             }
 
-            if (lines.size() != 0) {
-                //创建Page
-                TxtPage page = new TxtPage();
-                page.position = pages.size();
-                page.title = chapter.getTitle();
-                page.lines = new ArrayList<>(lines);
-                page.titleLines = titleLinesCount;
-                pages.add(page);
-                //重置Lines
-                lines.clear();
+            @Override
+            public void onFailure(Call<ChapterContentBean> call, Throwable t) {
+                Log.e("TAG","t.getMessage() == " + t.getMessage());
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            IOUtils.close(br);
-        }
-
-        //可能出现内容为空的情况
-        if (pages.size() == 0) {
-            TxtPage page = new TxtPage();
-            page.lines = new ArrayList<>(1);
-            pages.add(page);
-
-            mStatus = STATUS_EMPTY;
-        }
+        });
 
         //提示章节数量改变了。
         if (mPageChangeListener != null) {
@@ -645,7 +665,7 @@ public abstract class PageLoader {
             //根据状态不一样，数据不一样
             if (mStatus != STATUS_FINISH) {
                 if (mChapterList != null && mChapterList.size() != 0) {
-                    canvas.drawText(mChapterList.get(mCurChapterPos).getTitle()
+                    canvas.drawText(mChapterList.get(mCurChapterPos).getChapter()
                             , mMarginWidth, tipTop, mTipPaint);
                 }
             } else {
@@ -815,7 +835,7 @@ public abstract class PageLoader {
 
         //如果章节已显示，那么就重新计算页面
         if (mStatus == STATUS_FINISH) {
-            mCurPageList = loadPageList(mCurChapterPos);
+            //mCurPageList = loadPageList(mCurChapterPos);
             //重新设置文章指针的位置
             mCurPage = getCurPage(mCurPage.position);
         }
@@ -853,7 +873,7 @@ public abstract class PageLoader {
     boolean prevChapter() {
         //判断是否上一章节为空
         if (mCurChapterPos - 1 < 0) {
-            Toast.makeText(MyApp.Companion.getInstance(),"没有上一章了",Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyApp.Companion.getInstance(), "没有上一章了", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -869,7 +889,11 @@ public abstract class PageLoader {
         }
         //如果不存在则加载数据
         else {
-            mCurPageList = loadPageList(prevChapter);
+            if (prevChapter < 0) {
+                mCurPageList = loadPageList(mChapterList.get(0));
+            } else {
+                mCurPageList = loadPageList(mChapterList.get(prevChapter));
+            }
         }
 
         mLastChapter = mCurChapterPos;
@@ -930,7 +954,7 @@ public abstract class PageLoader {
     boolean nextChapter() {
         //加载一章
         if (mCurChapterPos + 1 >= mChapterList.size()) {
-            Toast.makeText(MyApp.Companion.getInstance(),"没有下一章了",Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyApp.Companion.getInstance(), "没有下一章了", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -946,7 +970,11 @@ public abstract class PageLoader {
             mNextPageList = null;
         } else {
             //这个PageList可能为 null，可能会造成问题。
-            mCurPageList = loadPageList(nextChapter);
+            if (nextChapter > mChapterList.size()) {
+                mCurPageList = loadPageList(mChapterList.get(mChapterList.size() - 1));
+            } else {
+                mCurPageList = loadPageList(mChapterList.get(nextChapter));
+            }
         }
 
         mLastChapter = mCurChapterPos;
@@ -1113,7 +1141,7 @@ public abstract class PageLoader {
      */
     private boolean checkStatus() {
         if (mStatus == STATUS_LOADING) {
-            Toast.makeText(MyApp.Companion.getInstance(),"正在加载中",Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyApp.Companion.getInstance(), "正在加载中", Toast.LENGTH_SHORT).show();
             return false;
         } else if (mStatus == STATUS_ERROR) {
             //点击重试
@@ -1131,10 +1159,10 @@ public abstract class PageLoader {
         void onChapterChange(int pos);
 
         //请求加载回调
-        void onLoadChapter(List<TxtChapter> chapters, int pos);
+        void onLoadChapter(List<ChaptersDetailsBean> chapters, int pos);
 
         //当目录加载完成的回调(必须要在创建的时候，就要存在了)
-        void onCategoryFinish(List<TxtChapter> chapters);
+        void onCategoryFinish(List<ChaptersDetailsBean> chapters);
 
         //页码改变
         void onPageCountChange(int count);

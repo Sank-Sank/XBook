@@ -12,6 +12,7 @@ import java.util.List;
 
 import sank.xbook.base.ChapterContentBean;
 import sank.xbook.base.ChaptersBean;
+import sank.xbook.base.ChaptersDetailsBean;
 
 /**
  * Created by newbiechen on 17-5-29.
@@ -26,52 +27,55 @@ public class NetPageLoader extends PageLoader{
 
     //初始化书籍
     @Override
-    public void openBook(ChaptersBean collBook){
-        super.openBook(collBook);
-        isBookOpen = false;
+    public void openBook(List<ChaptersDetailsBean> chapters){
+        super.openBook(chapters);
+//        isBookOpen = false;
         //if (collBook.getBookChapters() == null) return;
 //        mChapterList = convertTxtChapter(collBook.getChapters());
+
         //设置目录回调
         if (mPageChangeListener != null){
             mPageChangeListener.onCategoryFinish(mChapterList);
         }
         //提示加载下面的章节
-        loadCurrentChapter();
+        //loadCurrentChapter();
     }
 
-    private List<TxtChapter> convertTxtChapter(List<ChapterContentBean> bookChapters){
-        List<TxtChapter> txtChapters = new ArrayList<>(bookChapters.size());
-        for (ChapterContentBean bean : bookChapters){
-            TxtChapter chapter = new TxtChapter();
-//            chapter.bookId = bean.getBookId();
-//            chapter.title = bean.getTitle();
-//            chapter.link = bean.getLink();
-            txtChapters.add(chapter);
-        }
-        return txtChapters;
-    }
+//    private List<TxtChapter> convertTxtChapter(List<ChapterContentBean> bookChapters){
+//        List<TxtChapter> txtChapters = new ArrayList<>(bookChapters.size());
+//        for (ChapterContentBean bean : bookChapters){
+//            TxtChapter chapter = new TxtChapter();
+////            chapter.bookId = bean.getBookId();
+////            chapter.title = bean.getTitle();
+////            chapter.link = bean.getLink();
+//            txtChapters.add(chapter);
+//        }
+//        return txtChapters;
+//    }
 
     @Nullable
     @Override
-    protected List<TxtPage> loadPageList(int chapter) {
+    protected List<TxtPage> loadPageList(ChaptersDetailsBean chapter) {
         if (mChapterList == null){
             throw new IllegalArgumentException("chapter list must not null");
         }
+//
+//        //获取要加载的文件
+//        TxtChapter txtChapter = mChapterList.get(chapter);
+//        File file = new File(File.separator + mChapterList.get(chapter).title + ".wy");
+//        if (!file.exists()) return null;
+//
+//        Reader reader = null;
+//        try {
+//            reader = new FileReader(file);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        BufferedReader br = new BufferedReader(reader);
 
-        //获取要加载的文件
-        TxtChapter txtChapter = mChapterList.get(chapter);
-        File file = new File(File.separator + mChapterList.get(chapter).title + ".wy");
-        if (!file.exists()) return null;
 
-        Reader reader = null;
-        try {
-            reader = new FileReader(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        BufferedReader br = new BufferedReader(reader);
 
-        return loadPages(txtChapter,br);
+        return loadPages(chapter);
     }
 
     //装载上一章节的内容
@@ -132,7 +136,7 @@ public class NetPageLoader extends PageLoader{
 
     private void loadCurrentChapter(){
         if (mPageChangeListener != null){
-            List<TxtChapter> bookChapters = new ArrayList<>(5);
+            List<ChaptersDetailsBean> bookChapters = new ArrayList<>(5);
             //提示加载当前章节和前面两章和后面两章
             int current = mCurChapterPos;
             bookChapters.add(mChapterList.get(current));
@@ -176,7 +180,7 @@ public class NetPageLoader extends PageLoader{
     public void setChapterList(List<ChapterContentBean> bookChapters) {
         if (bookChapters == null) return;
 
-        mChapterList = convertTxtChapter(bookChapters);
+        //mChapterList = convertTxtChapter(bookChapters);
 
         if (mPageChangeListener != null){
             mPageChangeListener.onCategoryFinish(mChapterList);
