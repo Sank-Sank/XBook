@@ -1,8 +1,5 @@
 package sank.xbook.base
 
-import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Query
 
 data class BookBean(var status:Int,
                var bookname:String,
@@ -19,9 +16,16 @@ data class ChaptersDetailsBean(var id:Int,
                           var chapter:String)
 
 data class ChapterContentBean(var status: Int,
+                              var title:String,
                          var content:String){
     override fun toString(): String {
         return "status = $status , content = $content"
     }
 }
 
+internal class TxtPage {
+    var position: Int = 0
+    var title: String? = null
+    var titleLines: Int = 0         //当前 lines 中为 title 的行数。
+    var lines: List<String>? = null
+}

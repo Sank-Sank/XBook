@@ -1,18 +1,20 @@
 package sank.xbook.model.read_book.page;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
+import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import sank.xbook.base.ChapterContentBean;
-import sank.xbook.base.ChaptersBean;
 import sank.xbook.base.ChaptersDetailsBean;
+import sank.xbook.base.TxtPage;
 
 /**
  * Created by newbiechen on 17-5-29.
@@ -53,10 +55,12 @@ public class NetPageLoader extends PageLoader{
 //        return txtChapters;
 //    }
 
+    String contents = "";
+
     @Nullable
     @Override
     protected List<TxtPage> loadPageList(ChaptersDetailsBean chapter) {
-        if (mChapterList == null){
+        if (mChapterList == null) {
             throw new IllegalArgumentException("chapter list must not null");
         }
 //
@@ -74,9 +78,36 @@ public class NetPageLoader extends PageLoader{
 //        BufferedReader br = new BufferedReader(reader);
 
 
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://www.xyxhome.cn/book/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(new OkHttpClient())
+                .build();
+        RequestChapterAPI api = retrofit.create(RequestChapterAPI.class);
+        Log.e("TAG", "id == " + chapter.getId());
+        Call<ChapterContentBean> call = api.getChapter(chapter.getId());
+        call.enqueue(new Callback<ChapterContentBean>() {
+            @Override
+            public void onResponse(@NonNull Call<ChapterContentBean> call, @NonNull Response<ChapterContentBean> response) {
+                contents = response.body().getContent();
+            }
 
-        return loadPages(chapter);
+            @Override
+            public void onFailure(@NonNull Call<ChapterContentBean> call, @NonNull Throwable t) {
+                Log.e("TAG","请求网络失败");
+            }
+        });
+//
+//        try {
+//            URL url = new URL("http://www.xyxhome.cn/book/");
+//
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+
+        return loadPages(chapter.getChapter(), contents);
     }
+
 
     //装载上一章节的内容
     @Override

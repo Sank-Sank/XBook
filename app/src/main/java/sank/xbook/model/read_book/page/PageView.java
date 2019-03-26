@@ -31,8 +31,6 @@ public class PageView extends View {
     //滚动效果
     public final static int PAGE_MODE_SCROLL = 4;
 
-    private final static String TAG = "BookPageWidget";
-
     private int mViewWidth = 0; // 当前View的宽
     private int mViewHeight = 0; // 当前View的高
 
@@ -74,7 +72,7 @@ public class PageView extends View {
     //点击监听
     private TouchListener mTouchListener;
     //内容加载器
-    private PageLoader mPageLoader;
+    private NetPageLoad mPageLoader;
 
     public PageView(Context context) {
         this(context,null);
@@ -346,13 +344,13 @@ public class PageView extends View {
     }
 
     //获取PageLoader
-    public PageLoader getPageLoader(){
+    public NetPageLoad getPageLoader(){
         if (mPageLoader == null){
 //            if (isLocal){
 //                //mPageLoader = new LocalPageLoader(this);
 //            }
 //            else {
-                mPageLoader = new NetPageLoader(this);
+            mPageLoader = new NetPageLoad(this);
 //            }
         }
         return mPageLoader;
