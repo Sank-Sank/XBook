@@ -27,7 +27,7 @@ class LaunchActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         window.setFlags(0x00000400, 0x00000400)
         setContentView(R.layout.activity_launch)
-        handler.sendEmptyMessageDelayed(1,3000)
+        handler.sendEmptyMessageDelayed(1,500)
     }
 
     override fun onDestroy() {

@@ -207,10 +207,8 @@ public class PageView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-
         //绘制背景
         canvas.drawColor(mBgColor);
-
         //绘制动画
         mPageAnim.draw(canvas);
     }
@@ -325,7 +323,6 @@ public class PageView extends View {
 
     /**
      * 刷新当前页(主要是为了ScrollAnimation)
-     *
      */
     public void refreshPage(){
         if (mPageAnim instanceof ScrollPageAnim){

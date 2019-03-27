@@ -2,29 +2,47 @@ package sank.xbook.model.read_book.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.support.v4.widget.DrawerLayout
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import sank.xbook.R
 import sank.xbook.Utils.OnItemClickListeners
 import sank.xbook.base.BaseActivity
+import sank.xbook.base.ChapterContentBean
 import sank.xbook.base.ChaptersBean
 import sank.xbook.base.ChaptersDetailsBean
 import sank.xbook.model.read_book.Presenter.IPReadActivity
 import sank.xbook.model.read_book.Presenter.PReadActivity
-import sank.xbook.model.read_book.page.PageLoader
+import sank.xbook.model.read_book.model.IRequestChapterContent
+import sank.xbook.model.read_book.page.NetPageLoad
 import sank.xbook.model.read_book.page.PageView
+import sank.xbook.model.read_book.model.RequestChapterContent
 
 interface IReadActivity{
     fun onSuccess(data:ChaptersBean)
     fun onFailure()
 }
 
-class ReadActivity : BaseActivity() , IReadActivity{
+interface IChapterContent{
+    fun onRequestChapterContentSuccess(data: ChapterContentBean)
+    fun onRequestChapterContentFailure()
+}
+
+class ReadActivity : BaseActivity() , IReadActivity , IChapterContent{
+
+    companion object {
+        var chapterPosition: Int = 1
+    }
 
     private var bookName:String? = null
+    private lateinit var drawerLayout:DrawerLayout
+    private lateinit var left_layout: LinearLayout
     private lateinit var pageView: PageView
     private lateinit var book_name:TextView
     private lateinit var chapter_sum:TextView
@@ -32,10 +50,11 @@ class ReadActivity : BaseActivity() , IReadActivity{
 
     private var chaptersList:MutableList<ChaptersDetailsBean>? = null
     private var chaptersAdapter:ChaptersAdapter? = null
-
+    //网络请求
     private var p: IPReadActivity? = null
+    private var iRequestChapterContent : IRequestChapterContent? = null
 
-    private lateinit var mPageLoader: PageLoader
+    private lateinit var mPageLoader: NetPageLoad
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,16 +65,21 @@ class ReadActivity : BaseActivity() , IReadActivity{
     private fun initView(){
         bookName = intent.getStringExtra("bookName")
         p = PReadActivity(this)
+        drawerLayout = findViewById(R.id.drawerLayout)
+        left_layout = findViewById(R.id.left_layout)
         pageView = findViewById(R.id.pageView)
         book_name = findViewById(R.id.book_name)
         chapters = findViewById(R.id.chapters)
         chapter_sum = findViewById(R.id.chapter_sum)
         chaptersList= ArrayList()
         chapters.layoutManager = LinearLayoutManager(this)
-        //chapters.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        chapters.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         chaptersAdapter = ChaptersAdapter(this,chaptersList!!,object : OnItemClickListeners{
             override fun onItemClicked(view: View, position: Int) {
-                Toast.makeText(this@ReadActivity,"点击",Toast.LENGTH_SHORT).show()
+                chapterPosition = position + 1
+                iRequestChapterContent?.startRequest(chaptersList!![position].id)
+                Log.e("TAG","${chaptersList!![position].id}")
+                drawerLayout.closeDrawer(left_layout)
             }
         })
         chapters.adapter = chaptersAdapter
@@ -85,27 +109,12 @@ class ReadActivity : BaseActivity() , IReadActivity{
 
             }
         })
-        mPageLoader.setOnPageChangeListener(object : PageLoader.OnPageChangeListener{
-            override fun onChapterChange(pos: Int) {
-
-            }
-
-            override fun onLoadChapter(chapters: MutableList<ChaptersDetailsBean>?, pos: Int) {
-
-            }
-
-            override fun onCategoryFinish(chapters: MutableList<ChaptersDetailsBean>?) {
-
-            }
-
-            override fun onPageCountChange(count: Int) {
-
-            }
-
-            override fun onPageChange(pos: Int) {
-
+        mPageLoader.setOnLoadChapterContentListener(object : NetPageLoad.OnLoadChapterContentListener{
+            override fun onLoadChapter() {
+                iRequestChapterContent?.startRequest(chaptersList!![chapterPosition -1].id)
             }
         })
+        iRequestChapterContent = RequestChapterContent(this)
     }
 
     @SuppressLint("SetTextI18n")
@@ -114,16 +123,35 @@ class ReadActivity : BaseActivity() , IReadActivity{
         chaptersList?.addAll(data.chapters)
         chaptersAdapter?.notifyDataSetChanged()
         chapter_sum.text = "共${chaptersList?.size}章"
-        mPageLoader.openBook(data.chapters)
-        mPageLoader.openChapter(data.chapters[0])
+        mPageLoader.initBook(data.chapters)
+        iRequestChapterContent?.startRequest(chaptersList!![0].id)
     }
 
     override fun onFailure() {
 
     }
 
+    override fun onRequestChapterContentSuccess(data: ChapterContentBean) {
+        val chapterContentList = mPageLoader.loadChapter(data.title,data.content)
+        mPageLoader.openChapter(chapterContentList)
+    }
+
+    override fun onRequestChapterContentFailure() {
+        Log.e("TAG","请求失败")
+    }
+
+
     override fun onDestroy() {
-        mPageLoader.closeBook()
+        mPageLoader.cloneBook()
+        if(chaptersList != null){
+            chaptersList = null
+        }
+        if(iRequestChapterContent != null){
+            iRequestChapterContent = null
+        }
+        if(p != null){
+            p = null
+        }
         super.onDestroy()
     }
 

@@ -23,9 +23,13 @@ data class ChapterContentBean(var status: Int,
     }
 }
 
-internal class TxtPage {
+class TxtPage {
     var position: Int = 0
     var title: String? = null
     var titleLines: Int = 0         //当前 lines 中为 title 的行数。
-    var lines: List<String>? = null
+    var lines: MutableList<String>? = null
+
+    override fun toString(): String {
+        return "position = $position , title = $title  , titleLines = $titleLines , lines = ${lines.toString()}"
+    }
 }

@@ -15,6 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import sank.xbook.base.ChapterContentBean;
 import sank.xbook.base.ChaptersDetailsBean;
 import sank.xbook.base.TxtPage;
+import sank.xbook.model.read_book.model.RequestChapterAPI;
 
 /**
  * Created by newbiechen on 17-5-29.

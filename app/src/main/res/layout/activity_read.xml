@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/drawerLayout"
     tools:context=".model.read_book.view.ReadActivity">
 
 
@@ -13,12 +14,13 @@
 
 
     <LinearLayout
+        android:id="@+id/left_layout"
         android:layout_width="288dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@color/white"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         android:orientation="vertical">
 
 
@@ -29,18 +31,19 @@
 
             <TextView
                 android:id="@+id/book_name"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:layout_centerVertical="true"
+                android:textSize="20sp"
+                android:layout_centerInParent="true"
                 android:textColor="@color/black" />
 
 
             <TextView
                 android:id="@+id/chapter_sum"
-                android:layout_width="match_parent"
-                android:textSize="12sp"
-                android:textColor="#99000000"
+                android:layout_width="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#cc000000"
+                android:layout_marginEnd="10dp"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="10dp"
                 android:layout_alignParentEnd="true"

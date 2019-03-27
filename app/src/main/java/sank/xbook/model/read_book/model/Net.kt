@@ -1,4 +1,4 @@
-package sank.xbook.model.read_book.page
+package sank.xbook.model.read_book.model
 
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -9,6 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 import sank.xbook.base.ChapterContentBean
+import sank.xbook.model.read_book.view.IChapterContent
 
 /**
  *  @description
@@ -27,7 +28,7 @@ interface IRequestChapterContent{
 }
 
 
-class RequestChapterContent(var view : IPageView) : IRequestChapterContent{
+class RequestChapterContent(var view : IChapterContent) : IRequestChapterContent {
     override fun startRequest(id : Int) {
         val retrofit = Retrofit.Builder()
                 .baseUrl("http://www.xyxhome.cn/book/")
@@ -38,11 +39,11 @@ class RequestChapterContent(var view : IPageView) : IRequestChapterContent{
         val call = api.getChapter(id)
         call.enqueue(object : Callback<ChapterContentBean> {
             override fun onResponse(call: Call<ChapterContentBean>, response: Response<ChapterContentBean>) {
-                view.onSuccess(response.body()!!)
+                view.onRequestChapterContentSuccess(response.body()!!)
             }
 
             override fun onFailure(call: Call<ChapterContentBean>, t: Throwable) {
-                view.onFailure()
+                view.onRequestChapterContentFailure()
             }
         })
     }
