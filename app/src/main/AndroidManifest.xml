@@ -23,7 +23,8 @@
             android:name=".model.main.view.MainActivity"
             android:launchMode="singleTask" />
         <activity android:name=".model.read_book.view.ReadActivity" />
-        <activity android:name=".model.search_book.SearchActivity"></activity>
+        <activity android:name=".model.search_book.SearchActivity" />
+        <activity android:name=".model.classify.ClassifyDetailsActivity"></activity>
     </application>
 
 </manifest>

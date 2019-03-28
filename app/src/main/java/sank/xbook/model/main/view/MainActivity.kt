@@ -18,7 +18,7 @@ import org.greenrobot.eventbus.ThreadMode
 import sank.xbook.base.BaseActivity
 import sank.xbook.model.book_mall.BookMallFragment
 import sank.xbook.model.book_rack.veiw.BookRackFragment
-import sank.xbook.model.community.ClassifyFragment
+import sank.xbook.model.classify.ClassifyFragment
 import sank.xbook.base.DrawerLayoutOpen
 import sank.xbook.R
 import com.nineoldandroids.view.ViewHelper
