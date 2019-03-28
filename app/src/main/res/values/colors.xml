@@ -6,9 +6,9 @@
     <color name="white">#FFFFFF</color>
     <color name="font_color">#333333</color>    //字体颜色
 
-
     <color name="transparent">#00000000</color>
     <color name="black">#000000</color>
+    <color name="week_black">#99000000</color>
     <color name="color_cec29c">#CEC29C</color>
     <color name="color_19">#191919</color>
     <color name="color_cb">#cbcbcb</color>

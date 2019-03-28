@@ -2,12 +2,12 @@ package sank.xbook.base
 
 
 data class BookBean(var status:Int,
-               var bookname:String,
-               var booktype:String,
-               var book_author:String,
-               var book_synopsis:String,
-               var book_image:String,
-               var update_time:String)
+                   var bookname:String,
+                   var booktype:String,
+                   var book_author:String,
+                   var book_synopsis:String,
+                   var book_image:String,
+                   var update_time:String, var message:String?)
 
 data class ChaptersBean(var status:Int,
                    var chapters:List<ChaptersDetailsBean>)

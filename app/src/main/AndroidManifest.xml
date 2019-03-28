@@ -21,8 +21,9 @@
         </activity>
         <activity
             android:name=".model.main.view.MainActivity"
-            android:launchMode="singleTask"></activity>
-        <activity android:name=".model.read_book.view.ReadActivity"></activity>
+            android:launchMode="singleTask" />
+        <activity android:name=".model.read_book.view.ReadActivity" />
+        <activity android:name=".model.search_book.SearchActivity"></activity>
     </application>
 
 </manifest>

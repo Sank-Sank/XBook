@@ -16,6 +16,7 @@ import sank.xbook.R
 import sank.xbook.base.*
 import sank.xbook.model.book_rack.presenter.PBookRack
 import sank.xbook.model.read_book.view.ReadActivity
+import sank.xbook.model.search_book.SearchActivity
 
 /**
  *  @description
@@ -25,6 +26,7 @@ import sank.xbook.model.read_book.view.ReadActivity
 class BookRackFragment : BaseFragment(),IView {
     private lateinit var views:View
     private lateinit var menu:ImageView
+    private lateinit var SearchBook:ImageView
     private lateinit var bookRockRecycler: RecyclerView
 
     private var bookItem:MutableList<BookBean> = ArrayList()
@@ -41,8 +43,12 @@ class BookRackFragment : BaseFragment(),IView {
     private fun initView(){
         p = PBookRack(this)
         menu = views.findViewById(R.id.menu)
+        SearchBook = views.findViewById(R.id.SearchBook)
         menu.setOnClickListener {
             EventBus.getDefault().post(DrawerLayoutOpen())
+        }
+        SearchBook.setOnClickListener {
+            contexts?.startActivity(Intent(contexts,SearchActivity::class.java))
         }
         bookRockRecycler = views.findViewById(R.id.bookRockRecycler)
         bookRockRecycler.layoutManager = LinearLayoutManager(contexts)

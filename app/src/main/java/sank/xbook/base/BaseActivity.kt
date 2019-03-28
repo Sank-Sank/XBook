@@ -13,6 +13,10 @@ import android.view.View
 @SuppressLint("Registered")
 open class BaseActivity : AppCompatActivity(){
 
+    companion object {
+        const val BASEURL = "http://www.xyxhome.cn/book/"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)

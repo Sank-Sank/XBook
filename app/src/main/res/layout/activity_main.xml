@@ -1,70 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<sank.xbook.Utils.view.ResideLayout
+<android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".model.main.view.MainActivity">
-
-    <LinearLayout
-        android:id="@+id/main_left"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="100dp" />
-
-
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="6">
-
-        </android.support.v7.widget.RecyclerView>
-
-        <LinearLayout
-            android:id="@+id/bottom_left"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:src="@drawable/night_mode"
-                tools:ignore="NestedWeights" />
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:src="@drawable/setting" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffffff">
 
-        <RelativeLayout
+        <FrameLayout
             android:id="@+id/fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/bottom_main">
 
-        </RelativeLayout>
+        </FrameLayout>
 
         <LinearLayout
             android:id="@+id/bottom_main"
@@ -140,5 +95,6 @@
         </LinearLayout>
     </RelativeLayout>
 
+    <include layout="@layout/activity_main_left"/>
 
-</sank.xbook.Utils.view.ResideLayout>
+</android.support.v4.widget.DrawerLayout>
