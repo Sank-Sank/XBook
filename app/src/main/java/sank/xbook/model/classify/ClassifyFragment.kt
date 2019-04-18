@@ -1,7 +1,9 @@
 package sank.xbook.model.classify
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +11,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import org.greenrobot.eventbus.EventBus
 import sank.xbook.R
-import sank.xbook.base.BaseFragment
 import sank.xbook.base.DrawerLayoutOpen
+import sank.xbook.model.classify.Details.ClassifyDetailsActivity
 import sank.xbook.model.search_book.SearchActivity
 
 /**
@@ -18,7 +20,9 @@ import sank.xbook.model.search_book.SearchActivity
  *  @Author Sank
  *  @Time 2019/3/13
  */
-class ClassifyFragment : BaseFragment(), View.OnClickListener {
+class ClassifyFragment : Fragment(), View.OnClickListener {
+    private var contexts:Context? = null
+
     private lateinit var views:View
     private lateinit var menu:ImageView
     private lateinit var SearchBook:ImageView
@@ -31,6 +35,7 @@ class ClassifyFragment : BaseFragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         views = inflater.inflate(R.layout.framnent_classify,container,false)
+        contexts = context
         initView()
         return views
     }
@@ -63,46 +68,42 @@ class ClassifyFragment : BaseFragment(), View.OnClickListener {
                 contexts?.startActivity(Intent(contexts, SearchActivity::class.java))
             }
             R.id.xuanhuan -> {      //玄幻
-                startActivity(Intent(contexts,ClassifyDetailsActivity::class.java).apply {
-                    putExtra("classifyName",0)
+                startActivity(Intent(contexts, ClassifyDetailsActivity::class.java).apply {
+                    putExtra("classifyName","玄幻小说")
                 })
             }
             R.id.xiuzhen -> {       //修真
-                startActivity(Intent(contexts,ClassifyDetailsActivity::class.java).apply {
-                    putExtra("classifyName",1)
+                startActivity(Intent(contexts, ClassifyDetailsActivity::class.java).apply {
+                    putExtra("classifyName","修真小说")
                 })
             }
             R.id.dushi -> {         //都市
-                startActivity(Intent(contexts,ClassifyDetailsActivity::class.java).apply {
-                    putExtra("classifyName",2)
+                startActivity(Intent(contexts, ClassifyDetailsActivity::class.java).apply {
+                    putExtra("classifyName","都市小说")
                 })
             }
             R.id.chuanyue -> {      //穿越
-                startActivity(Intent(contexts,ClassifyDetailsActivity::class.java).apply {
-                    putExtra("classifyName",3)
+                startActivity(Intent(contexts, ClassifyDetailsActivity::class.java).apply {
+                    putExtra("classifyName","穿越小说")
                 })
             }
             R.id.wangyou -> {       //网游
-                startActivity(Intent(contexts,ClassifyDetailsActivity::class.java).apply {
-                    putExtra("classifyName",4)
+                startActivity(Intent(contexts, ClassifyDetailsActivity::class.java).apply {
+                    putExtra("classifyName","网游小说")
                 })
             }
             R.id.kehuan -> {        //科幻
-                startActivity(Intent(contexts,ClassifyDetailsActivity::class.java).apply {
-                    putExtra("classifyName",5)
+                startActivity(Intent(contexts, ClassifyDetailsActivity::class.java).apply {
+                    putExtra("classifyName","科幻小说")
                 })
             }
         }
     }
 
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-    }
-
-
-    override fun onDestroy() {
-
-        super.onDestroy()
+    override fun onDestroyView() {
+        if(contexts!=null){
+            contexts = null
+        }
+        super.onDestroyView()
     }
 }

@@ -1,4 +1,4 @@
-package sank.xbook.model.read_book;
+package sank.xbook.model.read_book.Tools;
 
 import android.support.annotation.StringRes;
 

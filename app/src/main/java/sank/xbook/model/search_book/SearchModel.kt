@@ -9,17 +9,22 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
-import sank.xbook.base.BaseActivity.Companion.BASEURL
 import sank.xbook.base.BookBean
+import sank.xbook.base.MyApp.Companion.BASEURL
+
 
 /**
  *  @description
  *  @Author Sank
  *  @Time 2019/3/28
  */
+interface ISearchModel{
+    fun loadData(name:String ,onLoadCompleteListener: OnLoadCompleteListener)
 
-interface ISearchNet{
-    fun startRequest(name:String)
+    interface OnLoadCompleteListener{
+        fun onComplete(data: BookBean)
+        fun onFailure()
+    }
 }
 
 interface SearchAPI{
@@ -28,8 +33,8 @@ interface SearchAPI{
                 name:String): Call<BookBean>
 }
 
-class SearchNet(var v:ISearchActivity) : ISearchNet{
-    override fun startRequest(name:String) {
+class SearchModel : ISearchModel{
+    override fun loadData(name: String, onLoadCompleteListener: ISearchModel.OnLoadCompleteListener) {
         val retrofit: Retrofit = Retrofit.Builder()
                 .baseUrl(BASEURL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -39,12 +44,12 @@ class SearchNet(var v:ISearchActivity) : ISearchNet{
         val call = api.getBook(name)
         call.enqueue(object : Callback<BookBean> {
             override fun onFailure(call: Call<BookBean>, t: Throwable) {
-                v.onSearchFailure()
+                onLoadCompleteListener.onFailure()
             }
 
             override fun onResponse(call: Call<BookBean>, response: Response<BookBean>) {
                 response.body()?.let {
-                    v.onSearchSuccess(it)
+                    onLoadCompleteListener.onComplete(it)
                 }
             }
         })

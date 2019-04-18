@@ -8,9 +8,9 @@ import sank.xbook.R
 import sank.xbook.base.ChaptersDetailsBean
 import sank.xbook.base.MyApp
 import sank.xbook.base.TxtPage
-import sank.xbook.model.read_book.ReadSettingManager
-import sank.xbook.model.read_book.ScreenUtils
-import sank.xbook.model.read_book.StringUtils
+import sank.xbook.model.read_book.Tools.ReadSettingManager
+import sank.xbook.model.read_book.Tools.ScreenUtils
+import sank.xbook.model.read_book.Tools.StringUtils
 import sank.xbook.model.read_book.view.ReadActivity.Companion.chapterPosition
 import java.lang.ref.WeakReference
 import java.util.*

@@ -8,10 +8,18 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
-import sank.xbook.base.BaseActivity.Companion.BASEURL
 import sank.xbook.base.BookBean
-import sank.xbook.base.IModel
-import sank.xbook.base.IPresenter
+import sank.xbook.base.MyApp.Companion.BASEURL
+
+
+interface IBookRackModel{
+    fun loadData(onLoadCompleteListener:OnLoadCompleteListener)
+
+    interface OnLoadCompleteListener{
+        fun onComplete(data:BookBean)
+        fun onFailure()
+    }
+}
 
 interface BookAPI{
     @GET("search")
@@ -19,8 +27,8 @@ interface BookAPI{
                 name:String): Call<BookBean>
 }
 
-class MBookRack(var p:IPresenter) : IModel{
-    override fun startRequestNet() {
+class BookRack : IBookRackModel{
+    override fun loadData(onLoadCompleteListener: IBookRackModel.OnLoadCompleteListener) {
         val retrofit: Retrofit = Retrofit.Builder()
                 .baseUrl(BASEURL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -30,15 +38,14 @@ class MBookRack(var p:IPresenter) : IModel{
         val call = api.getBook("步步莲劫")
         call.enqueue(object : Callback<BookBean> {
             override fun onFailure(call: Call<BookBean>, t: Throwable) {
-                p.requestFailure()
+                onLoadCompleteListener.onFailure()
             }
 
             override fun onResponse(call: Call<BookBean>, response: Response<BookBean>) {
-                if(response.body() != null){
-                    p.requestSuccess(response.body()!!)
+                response.body()?.let {
+                    onLoadCompleteListener.onComplete(it)
                 }
             }
         })
     }
-
 }

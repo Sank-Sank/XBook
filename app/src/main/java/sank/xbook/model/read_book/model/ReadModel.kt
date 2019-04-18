@@ -10,10 +10,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 import sank.xbook.base.ChaptersBean
-import sank.xbook.model.read_book.Presenter.IPReadActivity
 
-interface IMReadActivity{
-    fun startRequestNet(bookName:String)
+
+interface IReadModel{
+    fun loadData(bookName:String,onLoadCompleteListener: OnLoadCompleteListener)
+
+    interface OnLoadCompleteListener{
+        fun onComplete(data: ChaptersBean)
+        fun onFailure()
+    }
 }
 
 interface ChapterAPI{
@@ -22,8 +27,8 @@ interface ChapterAPI{
                 bookName:String): Call<ChaptersBean>
 }
 
-class MReadActivity(private var presenter:IPReadActivity):IMReadActivity{
-    override fun startRequestNet(bookName:String) {
+class ReadModel:IReadModel{
+    override fun loadData(bookName: String, onLoadCompleteListener: IReadModel.OnLoadCompleteListener) {
         val retrofit: Retrofit = Retrofit.Builder()
                 .baseUrl("http://www.xyxhome.cn/book/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -33,12 +38,12 @@ class MReadActivity(private var presenter:IPReadActivity):IMReadActivity{
         val call = api.getChapters(bookName)
         call.enqueue(object : Callback<ChaptersBean> {
             override fun onFailure(call: Call<ChaptersBean>, t: Throwable) {
-                presenter.requestFailure()
+                onLoadCompleteListener.onFailure()
             }
 
             override fun onResponse(call: Call<ChaptersBean>, response: Response<ChaptersBean>) {
                 response.body()?.let {
-                    presenter.requestSuccess(it)
+                    onLoadCompleteListener.onComplete(it)
                 }
             }
         })

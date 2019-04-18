@@ -3,6 +3,8 @@ package sank.xbook.model.search_book
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat.getSystemService
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.KeyEvent
@@ -18,14 +20,7 @@ import sank.xbook.base.BookBean
 import sank.xbook.model.read_book.view.ReadActivity
 import android.view.inputmethod.InputMethodManager
 
-
-interface ISearchActivity{
-    fun onSearchSuccess(data : BookBean)
-    fun onSearchFailure()
-}
-
-
-class SearchActivity : BaseActivity(), View.OnClickListener ,ISearchActivity  {
+class SearchActivity : BaseActivity<SearchPresenter, SearchPresenter.ISearchView>(), View.OnClickListener , SearchPresenter.ISearchView {
     private lateinit var voice:ImageView
     private lateinit var searchText:EditText
     private lateinit var searchButton:ImageView
@@ -34,9 +29,10 @@ class SearchActivity : BaseActivity(), View.OnClickListener ,ISearchActivity  {
     private lateinit var searchNoData: TextView
     private lateinit var noNet: TextView
 
-    private var net:ISearchNet? = null
     private var adapter:SearchAdapter? = null
     private var bookItem:MutableList<BookBean>? = null
+
+    override fun createPresenter(): SearchPresenter = SearchPresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +52,6 @@ class SearchActivity : BaseActivity(), View.OnClickListener ,ISearchActivity  {
         voice.setOnClickListener(this)
         searchButton.setOnClickListener(this)
 
-        net = SearchNet(this)
         bookItem = ArrayList()
         searchRecyclerView.layoutManager = LinearLayoutManager(this)
         adapter = SearchAdapter(this, bookItem!!, object : OnItemClickListeners {
@@ -129,13 +124,10 @@ class SearchActivity : BaseActivity(), View.OnClickListener ,ISearchActivity  {
         if (progressBar.visibility == View.GONE)
             progressBar.visibility = View.VISIBLE
         val name = searchText.text.toString()
-        net?.startRequest(name)
+        mPresenter?.fetch(name)
     }
 
     override fun onDestroy() {
-        if(net != null){
-            net = null
-        }
         if(bookItem != null){
             bookItem?.clear()
             bookItem = null

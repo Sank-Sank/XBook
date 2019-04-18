@@ -23,6 +23,9 @@ data class ChapterContentBean(var status: Int,
     }
 }
 
+/**
+ * 单页实例
+ */
 class TxtPage {
     var position: Int = 0
     var title: String? = null
@@ -33,3 +36,18 @@ class TxtPage {
         return "position = $position , title = $title  , titleLines = $titleLines , lines = ${lines.toString()}"
     }
 }
+
+class TypeBean1(var status:Int,
+               var count:Int,
+               var pages:List<TypeBean2>)
+
+class TypeBean2(var model:String,
+                var pk:Int,
+                var fields:TypeBean3)
+
+class TypeBean3(var book_name:String,
+                var book_type:String,
+                var book_author:String,
+                var book_synopsis:String,
+                var book_image:String,
+                var update_time:String)

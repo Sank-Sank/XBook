@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".model.main.view.LaunchActivity">
+        <activity android:name=".model.Launch.LaunchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,11 +20,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".model.main.view.MainActivity"
-            android:launchMode="singleTask" />
-        <activity android:name=".model.read_book.view.ReadActivity" />
-        <activity android:name=".model.search_book.SearchActivity" />
-        <activity android:name=".model.classify.ClassifyDetailsActivity"></activity>
+            android:name=".model.main.MainActivity"
+            android:launchMode="singleTask"/>
+        <activity android:name=".model.read_book.view.ReadActivity"
+            android:launchMode="singleTask"/>
+        <activity android:name=".model.search_book.SearchActivity"
+            android:launchMode="singleTask"/>
+        <activity android:name=".model.classify.Details.ClassifyDetailsActivity"
+            android:launchMode="singleTask"/>
+        <activity android:name=".model.user.login.LoginActivity"
+            android:launchMode="singleTask"/>
+        <activity android:name=".model.user.register.RegisterActivity"
+            android:launchMode="singleTask"/>
     </application>
 
 </manifest>

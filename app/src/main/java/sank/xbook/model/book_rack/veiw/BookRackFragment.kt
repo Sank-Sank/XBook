@@ -14,7 +14,7 @@ import org.greenrobot.eventbus.EventBus
 import sank.xbook.Utils.OnItemClickListeners
 import sank.xbook.R
 import sank.xbook.base.*
-import sank.xbook.model.book_rack.presenter.PBookRack
+import sank.xbook.model.book_rack.presenter.BookRackPresenter
 import sank.xbook.model.read_book.view.ReadActivity
 import sank.xbook.model.search_book.SearchActivity
 
@@ -23,7 +23,10 @@ import sank.xbook.model.search_book.SearchActivity
  *  @Author Sank
  *  @Time 2019/3/13
  */
-class BookRackFragment : BaseFragment(),IView {
+
+
+
+class BookRackFragment : BaseFragment<BookRackPresenter, BookRackPresenter.IBookRackView>(), BookRackPresenter.IBookRackView {
     private lateinit var views:View
     private lateinit var menu:ImageView
     private lateinit var SearchBook:ImageView
@@ -32,7 +35,7 @@ class BookRackFragment : BaseFragment(),IView {
     private var bookItem:MutableList<BookBean> = ArrayList()
     private lateinit var bookRockAdapter:BookRockAdapter
 
-    private var p:IPresenter? = null
+    override fun createPresenter(): BookRackPresenter = BookRackPresenter(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         views = inflater.inflate(R.layout.framnent_book_rack, container, false)
@@ -41,7 +44,6 @@ class BookRackFragment : BaseFragment(),IView {
     }
 
     private fun initView(){
-        p = PBookRack(this)
         menu = views.findViewById(R.id.menu)
         SearchBook = views.findViewById(R.id.SearchBook)
         menu.setOnClickListener {
@@ -61,9 +63,7 @@ class BookRackFragment : BaseFragment(),IView {
             }
         })
         bookRockRecycler.adapter = bookRockAdapter
-        if(p!=null){
-            p!!.requestNet()
-        }
+        mPresenter?.fetch()
     }
 
     override fun onSuccess(data:BookBean) {
@@ -84,9 +84,6 @@ class BookRackFragment : BaseFragment(),IView {
     }
 
     override fun onDestroyView() {
-        if(p != null){
-            p = null
-        }
         super.onDestroyView()
     }
 

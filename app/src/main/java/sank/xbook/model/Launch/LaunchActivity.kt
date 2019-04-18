@@ -1,14 +1,16 @@
-package sank.xbook.model.main.view
+package sank.xbook.model.Launch
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import sank.xbook.base.BaseActivity
+import android.support.v7.app.AppCompatActivity
+import android.view.Window
 import sank.xbook.R
+import sank.xbook.model.main.MainActivity
 
-class LaunchActivity : BaseActivity() {
+class LaunchActivity : AppCompatActivity() {
 
     private val handler = @SuppressLint("HandlerLeak")
     object : Handler(){
@@ -25,6 +27,7 @@ class LaunchActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setFlags(0x00000400, 0x00000400)
         setContentView(R.layout.activity_launch)
         handler.sendEmptyMessageDelayed(1,500)

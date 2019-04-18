@@ -1,6 +1,7 @@
-package sank.xbook.model.main.view
+package sank.xbook.model.main
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v4.widget.DrawerLayout
@@ -11,7 +12,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import kotlinx.android.synthetic.main.activity_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -22,10 +22,12 @@ import sank.xbook.model.classify.ClassifyFragment
 import sank.xbook.base.DrawerLayoutOpen
 import sank.xbook.R
 import com.nineoldandroids.view.ViewHelper
+import kotlinx.android.synthetic.main.activity_main.*
 import sank.xbook.Utils.OnItemClickListeners
+import sank.xbook.model.user.login.LoginActivity
 
 
-class MainActivity : BaseActivity() , View.OnClickListener {
+class MainActivity : BaseActivity<MainPresenter, MainPresenter.IMainView>() , View.OnClickListener {
     /**
      * 侧滑布局
      */
@@ -54,6 +56,8 @@ class MainActivity : BaseActivity() , View.OnClickListener {
     private lateinit var leftMenuRecycler:RecyclerView
     private var adapter : leftMenuAdapter? = null
     private var leftMenuList:MutableList<String> = ArrayList()
+
+    override fun createPresenter(): MainPresenter = MainPresenter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,9 +113,9 @@ class MainActivity : BaseActivity() , View.OnClickListener {
         leftMenuList.add("我的收藏")
         leftMenuList.add("隐私空间")
         leftMenuRecycler.layoutManager = LinearLayoutManager(this)
-        adapter = leftMenuAdapter(this,leftMenuList,object : OnItemClickListeners{
+        adapter = leftMenuAdapter(this, leftMenuList, object : OnItemClickListeners {
             override fun onItemClicked(view: View, position: Int) {
-                when(position){
+                when (position) {
                     0 -> {      //点击我的钱包
 
                     }
@@ -126,21 +130,15 @@ class MainActivity : BaseActivity() , View.OnClickListener {
         })
         leftMenuRecycler.adapter = adapter
 
-        login.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
+        login.setOnClickListener {
+            this@MainActivity.startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+        }
+        about.setOnClickListener {
 
-            }
-        })
-        about.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
+        }
+        setting.setOnClickListener {
 
-            }
-        })
-        setting.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-
-            }
-        })
+        }
     }
 
     private fun slideAnim(drawerView: View, slideOffset: Float) {

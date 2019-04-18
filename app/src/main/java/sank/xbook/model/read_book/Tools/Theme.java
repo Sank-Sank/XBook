@@ -1,4 +1,4 @@
-package sank.xbook.model.read_book;
+package sank.xbook.model.read_book.Tools;
 
 /**
  * Created by dongjunkun on 2016/2/6.

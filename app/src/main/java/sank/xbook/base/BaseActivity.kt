@@ -1,27 +1,35 @@
 package sank.xbook.base
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Window
-import android.view.WindowManager
-import android.os.Build
-import android.view.View
 
 
 @SuppressLint("Registered")
-open class BaseActivity : AppCompatActivity(){
+abstract class BaseActivity<P : BasePresenter<V>,V : IView> : AppCompatActivity(), IView{
+    /**
+     * p层引用
+     */
+    protected var mPresenter: P? = null
 
-    companion object {
-        const val BASEURL = "http://www.xyxhome.cn/book/"
-    }
+    /**
+     * 创建该Activity的Presenter
+     */
+    protected abstract fun createPresenter(): P
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
+        mPresenter = createPresenter()
+        mPresenter?.attachView(this as V)
     }
 
-
-
+    override fun onDestroy() {
+        if (mPresenter != null) {
+            mPresenter?.detachView()
+            mPresenter = null
+        }
+        super.onDestroy()
+    }
 }

@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import sank.xbook.model.read_book.ScreenUtils;
+import sank.xbook.model.read_book.Tools.ScreenUtils;
 import sank.xbook.model.read_book.animation.CoverPageAnim;
 import sank.xbook.model.read_book.animation.HorizonPageAnim;
 import sank.xbook.model.read_book.animation.NonePageAnim;

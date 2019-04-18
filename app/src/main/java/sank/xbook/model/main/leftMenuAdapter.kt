@@ -1,4 +1,4 @@
-package sank.xbook.model.main.view
+package sank.xbook.model.main
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView

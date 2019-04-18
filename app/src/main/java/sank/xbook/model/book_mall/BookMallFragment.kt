@@ -15,11 +15,12 @@ import sank.xbook.R
  *  @Author Sank
  *  @Time 2019/3/13
  */
-class BookMallFragment : BaseFragment(){
+class BookMallFragment : BaseFragment<BookMallPresenter, BookMallPresenter.IBookMallViewIView>(){
     private lateinit var views:View
     private lateinit var viewPager:ViewPager
     private lateinit var radioGroup:RadioGroup
 
+    override fun createPresenter(): BookMallPresenter = BookMallPresenter()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         views = inflater.inflate(R.layout.framnent_book_mall,container,false)
         initView()
