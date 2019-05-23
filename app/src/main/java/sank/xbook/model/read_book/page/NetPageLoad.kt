@@ -3,6 +3,8 @@ package sank.xbook.model.read_book.page
 import android.graphics.*
 import android.support.v4.content.ContextCompat
 import android.text.TextPaint
+import android.text.TextUtils.substring
+import android.util.Log
 import android.widget.Toast
 import sank.xbook.R
 import sank.xbook.base.ChaptersDetailsBean
@@ -14,6 +16,8 @@ import sank.xbook.model.read_book.Tools.StringUtils
 import sank.xbook.model.read_book.view.ReadActivity.Companion.chapterPosition
 import java.lang.ref.WeakReference
 import java.util.*
+import android.util.DisplayMetrics
+
 
 /**
  *  @description
@@ -31,8 +35,8 @@ class NetPageLoad(private var mPageView: PageView) {
         const val STATUS_PARSE = 5    //正在解析 (一般用于本地数据加载)
         const val STATUS_PARSE_ERROR = 6 //本地文件解析错误(暂未被使用)
 
-        internal val DEFAULT_MARGIN_HEIGHT = 28
-        internal val DEFAULT_MARGIN_WIDTH = 12
+        const val DEFAULT_MARGIN_HEIGHT = 28
+        const val DEFAULT_MARGIN_WIDTH = 12
 
         private val DEFAULT_TIP_SIZE = 12
         private val EXTRA_TITLE_SIZE = 4
@@ -69,9 +73,7 @@ class NetPageLoad(private var mPageView: PageView) {
     //监听器
     private var onLoadChapterContentListener: OnLoadChapterContentListener? = null
     //当前的状态
-    protected var mStatus:Int = STATUS_LOADING
-    //当前章
-//    protected var mCurChapterPos = 0
+    protected var mStatus: Int = STATUS_LOADING
 
     //上一章的记录
     private var mLastChapter = 0
@@ -234,7 +236,6 @@ class NetPageLoad(private var mPageView: PageView) {
 
         //如果章节已显示，那么就重新计算页面
         if (mStatus == STATUS_FINISH) {
-            //mCurPageList = loadPageList(mCurChapterPos)
             //重新设置文章指针的位置
             mCurPage = getCurPage(mCurPage.position)
         }
@@ -252,7 +253,7 @@ class NetPageLoad(private var mPageView: PageView) {
     /**
      * 设置章节加载监听
      */
-    fun setOnLoadChapterContentListener(onLoadChapterContentListener : OnLoadChapterContentListener){
+    fun setOnLoadChapterContentListener(onLoadChapterContentListener: OnLoadChapterContentListener) {
         this.onLoadChapterContentListener = onLoadChapterContentListener
     }
 
@@ -293,7 +294,7 @@ class NetPageLoad(private var mPageView: PageView) {
     /**
      * 打开具体章节
      */
-    fun openChapter(chapterContentList : List<TxtPage>){
+    fun openChapter(chapterContentList: List<TxtPage>) {
         mCurPageList = chapterContentList
         mStatus = STATUS_FINISH
         mCurPage = getCurPage(0)
@@ -302,9 +303,12 @@ class NetPageLoad(private var mPageView: PageView) {
     }
 
 
-    fun loadChapter(title:String,contents:String) : List<TxtPage>{
-        //接收内容
-        var content = contents
+    fun loadChapter(title: String, contents: String): List<TxtPage> {
+        val content1 = contents.replace("\r\r", "/*")
+        var content = content1.replace("    ", "\t")
+        Log.e("TAG", content)
+        //title
+        var isTitle = true
         //生成的页面
         val pages = ArrayList<TxtPage>()
         //一页的文字
@@ -312,43 +316,86 @@ class NetPageLoad(private var mPageView: PageView) {
         //界面的高
         var rHeight = mVisibleHeight.toFloat()
         //一行所占的字数
-        val wordCount = (mVisibleWidth / mTitlePaint.measureText("哈")).toInt()
+        val wordCount = (mVisibleWidth / mTextPaint.textSize).toInt()
+        //正常一行文字所占的高度
+        val textHeight = mTextPaint.textSize * 1.5.toFloat()
+        // /*出现的位置
+        var index: Int
+        //临时段落
+        var para: String
+        //是否是最后一行
+        var isLast = false
+        //是否是当前段落的第一行
+        var isPageFirstLine = true
+        //当是段落第一行时，一行所占文字字数
+        val pageFirstLineCount = wordCount - 1
 
         while (content != "") {
-
-            if (content.length < wordCount) {
-                lines.add(content)
-                content = ""
-                rHeight = 0F
+            //首先将title放入第一页中
+            if (isTitle) {
+                lines.add(title)
+                isTitle = false
+                rHeight -= mTitlePaint.textSize * 3
+            }
+            index = content.indexOf("/*")                ///*出现的下标
+            if (index != -1) {
+                para = content.substring(0, index)          //段落
+                content = content.substring(index + 2, content.length)
             } else {
-                val temp = content
-                lines.add(temp.substring(0, wordCount))
-                rHeight -= mTextPaint.textSize
+                para = content.substring(0, content.length)     //最后一段
+                content = ""
             }
-
-            if (content.length > wordCount) {
-                content = content.substring(wordCount, content.length)
-            }
-
-            if (rHeight <= 0) {
-                //单页
-                val page = TxtPage()
-                page.title = title
-                page.position = pages.size
-                if(pages.size == 0){
-                    page.titleLines = 1
-                }else{
-                    page.titleLines = 0
+            //将段落添加到当前页中
+            while (para != "") {
+                if (isPageFirstLine) {
+                    if (para.length < pageFirstLineCount) {
+                        lines.add(para)
+                        para = ""
+                        rHeight -= textHeight
+                        if (content == "") {      //是否是最后一行 并且本页没有占满
+                            isLast = true
+                        }
+                    } else {
+                        lines.add(para.substring(0, pageFirstLineCount))
+                        para = para.substring(pageFirstLineCount, para.length)
+                        rHeight -= textHeight
+                    }
+                    isPageFirstLine = false
+                } else {
+                    if (para.length < wordCount) {
+                        lines.add(para)
+                        para = ""
+                        rHeight -= textHeight
+                        if (content == "") {      //是否是最后一行 并且本页没有占满
+                            isLast = true
+                        }
+                    } else {
+                        lines.add(para.substring(0, wordCount))
+                        para = para.substring(wordCount, para.length)
+                        rHeight -= textHeight
+                    }
                 }
-                page.lines = lines
-                pages.add(page)
-                rHeight = mVisibleHeight.toFloat()
-                lines = ArrayList()
-                continue
+                //生成下一页
+                if (rHeight < mTextPaint.textSize || (isLast && rHeight > mTextPaint.textSize)) { //(rHeight-mTextPaint.textSize) < mTextPaint.textSize  ||
+                    //单页
+                    val page = TxtPage()
+                    page.title = title
+                    page.position = pages.size
+                    if (pages.size == 0) {
+                        page.titleLines = 1
+                    } else {
+                        page.titleLines = 0
+                    }
+                    page.lines = lines
+                    pages.add(page)
+                    rHeight = mVisibleHeight.toFloat()
+                    lines = ArrayList()
+                }
             }
-
+            //将段落第一行重置
+            isPageFirstLine = true
         }
-
+        Log.e("TAG", "pages=$pages")
         return pages
     }
 
@@ -515,12 +562,20 @@ class NetPageLoad(private var mPageView: PageView) {
             //对内容进行绘制
             for (i in mCurPage.titleLines until mCurPage.lines!!.size) {
                 str = mCurPage.lines!![i]
-
-                canvas.drawText(str, mMarginWidth.toFloat(), top, mTextPaint)
-                top += if (str.endsWith("\n")) {
-                    para.toFloat()
+                if (str.startsWith("\t")) {
+                    canvas.drawText(str, mMarginWidth / 2.toFloat() + (mTextPaint.textSize * 2), top, mTextPaint)
+                    top += if (str.endsWith("\n")) {
+                        para.toFloat()
+                    } else {
+                        interval.toFloat()
+                    }
                 } else {
-                    interval.toFloat()
+                    canvas.drawText(str, mMarginWidth.toFloat(), top, mTextPaint)
+                    top += if (str.endsWith("\n")) {
+                        para.toFloat()
+                    } else {
+                        interval.toFloat()
+                    }
                 }
             }
         }
@@ -588,30 +643,21 @@ class NetPageLoad(private var mPageView: PageView) {
             mCurPageList = mWeakPrePageList?.get()
             mWeakPrePageList = null
         } else {
-//            if (prevChapter < 0) {
-////                iRequestChapterContent?.startRequest(mChapterList!![0].id)
-//                onLoadChapterContentListener?.onLoadChapter(0)
-//            } else {
-//                iRequestChapterContent?.startRequest(mChapterList!![prevChapter].id)
-                chapterPosition--
-                onLoadChapterContentListener?.onLoadChapter()
-//            }
-        }//如果不存在则加载数据
+            //将章节减一
+            chapterPosition--
+            onLoadChapterContentListener?.onLoadChapter()
+        }
 
         mLastChapter = chapterPosition
         chapterPosition = prevChapter
 
-        if (mCurPageList != null) {
-            mStatus = STATUS_FINISH
-        } else {//如果当前章不存在，则表示在加载中
-            mStatus = STATUS_LOADING
-            //重置position的位置，防止正在加载的时候退出时候存储的位置为上一章的页码
-            mCurPage.position = 0
-            mPageView.drawNextPage()
-        }
-
-//        if (mPageChangeListener != null) {
-//            mPageChangeListener.onChapterChange(mCurChapterPos)
+//        if (mCurPageList != null) {
+//            mStatus = STATUS_FINISH
+//        } else {//如果当前章不存在，则表示在加载中
+//            mStatus = STATUS_LOADING
+//            //重置position的位置，防止正在加载的时候退出时候存储的位置为上一章的页码
+//            mCurPage.position = 0
+//            mPageView.drawNextPage()
 //        }
 
         return true
@@ -648,7 +694,7 @@ class NetPageLoad(private var mPageView: PageView) {
      */
     private fun nextChapter(): Boolean {
         //加载一章
-        if (chapterPosition  > mChapterList!!.size) {
+        if (chapterPosition >= mChapterList!!.size) {
             Toast.makeText(MyApp.getInstance(), "没有下一章了", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -664,14 +710,8 @@ class NetPageLoad(private var mPageView: PageView) {
             mCurPageList = mNextPageList
             mNextPageList = null
         } else {
-//            if (nextChapter == mChapterList!!.size) {
-////                mCurPageList = loadPageList(mChapterList!![mChapterList!!.size - 1])
-//                onLoadChapterContentListener?.onLoadChapter(mChapterList!!.size)
-//            } else {
-//                mCurPageList = loadPageList(mChapterList!![nextChapter])
-                chapterPosition++
-                onLoadChapterContentListener?.onLoadChapter()
-//            }
+            chapterPosition++
+            onLoadChapterContentListener?.onLoadChapter()
         }
 
         mLastChapter = chapterPosition
@@ -685,11 +725,7 @@ class NetPageLoad(private var mPageView: PageView) {
             //重置position的位置，防止正在加载的时候退出时候存储的位置为上一章的页码
             mCurPage.position = 0
             mPageView.drawNextPage()
-        }//如果当前章不存在，则表示在加载中
-
-//        if (mPageChangeListener != null) {
-//            mPageChangeListener.onChapterChange(mCurChapterPos)
-//        }
+        }
         return true
     }
 
@@ -715,9 +751,6 @@ class NetPageLoad(private var mPageView: PageView) {
         if (pos < 0) {
             return null
         }
-//        if (mPageChangeListener != null) {
-//            mPageChangeListener.onPageChange(pos)
-//        }
         return mCurPageList?.get(pos)
     }
 
@@ -730,9 +763,6 @@ class NetPageLoad(private var mPageView: PageView) {
             if (pos >= mCurPageList!!.size) {
                 return null
             }
-//            if (mPageChangeListener != null) {
-//                mPageChangeListener.onPageChange(pos)
-//            }
             return mCurPageList?.get(pos)
         }
         return TxtPage()
@@ -750,7 +780,6 @@ class NetPageLoad(private var mPageView: PageView) {
      * 设置文字大小
      */
     fun setTextSize(textSize: Int) {
-        //        if (!isBookOpen) return;
 
         //设置textSize
         mTextSize = textSize
@@ -783,6 +812,47 @@ class NetPageLoad(private var mPageView: PageView) {
         //重新设置文章指针的位置
         mCurPage = getCurPage(mCurPage.position)
         //绘制
+        mPageView.refreshPage()
+    }
+
+    //跳转到上一章
+    fun skipPreChapter(): Int {
+        //载入上一章。
+        if (prevChapter()) {
+            mCurPage = getCurPage(0)
+            mPageView.refreshPage()
+        }
+        return 0
+    }
+
+    //跳转到下一章
+    fun skipNextChapter(): Int {
+        //判断是否达到章节的终止点
+        if (nextChapter()) {
+            mCurPage = getCurPage(0)
+            mPageView.refreshPage()
+        }
+        return 0
+    }
+
+    //跳转到指定章节
+    fun skipToChapter(pos: Int) {
+        //正在加载
+        mStatus = STATUS_LOADING
+        //将上一章的缓存设置为null
+        mWeakPrePageList = null
+        //将下一章缓存设置为null
+        mNextPageList = null
+        //重置position的位置，防止正在加载的时候退出时候存储的位置为上一章的页码
+        mCurPage.position = 0
+        //发起请求,并充值章节码
+        chapterPosition = pos
+        onLoadChapterContentListener?.onLoadChapter()
+    }
+
+    //跳转到具体的页
+    fun skipToPage(pos: Int) {
+        mCurPage = getCurPage(pos)
         mPageView.refreshPage()
     }
 
@@ -826,12 +896,12 @@ class NetPageLoad(private var mPageView: PageView) {
      * 关闭书籍,清空资源
      */
     fun cloneBook() {
-        if(onLoadChapterContentListener!=null){
+        if (onLoadChapterContentListener != null) {
             onLoadChapterContentListener = null
         }
     }
 
-    interface OnLoadChapterContentListener{
+    interface OnLoadChapterContentListener {
         fun onLoadChapter()
     }
 

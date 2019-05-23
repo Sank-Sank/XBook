@@ -121,7 +121,7 @@ public class PageView extends View {
                 break;
             case PAGE_MODE_SCROLL:
                 mPageAnim = new ScrollPageAnim(mViewWidth, mViewHeight, 0,
-                        ScreenUtils.dpToPx(PageLoader.DEFAULT_MARGIN_HEIGHT),this,mPageAnimListener);
+                        ScreenUtils.dpToPx(NetPageLoad.DEFAULT_MARGIN_HEIGHT),this,mPageAnimListener);
                 break;
             default:
                 mPageAnim = new SimulationPageAnim(mViewWidth, mViewHeight,this,mPageAnimListener);

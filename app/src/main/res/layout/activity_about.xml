@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".model.main.AboutActivity">
+
+    <RelativeLayout
+        android:id="@+id/normal_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimary">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:padding="6dp"
+            android:src="@drawable/white_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:text="关于作者"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_below="@+id/normal_title"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="      作者：Sank"
+            android:textColor="@color/week_black"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="      联系方式:14797464526"
+            android:textColor="@color/week_black"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="      该作品为本人本科毕业设计，使用kotlin语言编写，书籍是使用Python抓取的网络数据，如有侵权请联系作者，立即删除。"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/week_black"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</RelativeLayout>

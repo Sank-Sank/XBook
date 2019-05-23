@@ -4,14 +4,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import org.greenrobot.eventbus.EventBus
 import sank.xbook.R
 import sank.xbook.Utils.SPUtils
 import sank.xbook.base.BaseActivity
+import sank.xbook.base.UserLoginInfo
 import sank.xbook.model.user.register.RegisterActivity
 
 
 data class LoginBean(var status:Int,
-                     var message:String)
+                     var message:String?,
+                     var account:String?,
+                     var name:String?,
+                     var gender:String?)
 
 class LoginActivity : BaseActivity<LoginPresenter, LoginPresenter.ILoginView>() , View.OnClickListener, LoginPresenter.ILoginView {
     private lateinit var back:ImageView
@@ -70,8 +75,18 @@ class LoginActivity : BaseActivity<LoginPresenter, LoginPresenter.ILoginView>() 
         when(data.status){
             0 -> {
                 Toast.makeText(this, data.message,Toast.LENGTH_SHORT).show()
-                SPUtils.putUserInfo(this,"用户名",data.message)
-                SPUtils.putUserInfo(this,"密码",data.message)
+                //已经登录
+                SPUtils.putUserIsLogin(this,"login",true)
+                data.account?.let {
+                    SPUtils.putUserInfo(this,"account",it)
+                }
+                data.name?.let {
+                    SPUtils.putUserInfo(this,"name",it)
+                }
+                data.gender?.let {
+                    SPUtils.putUserInfo(this,"gender",it)
+                }
+                EventBus.getDefault().post(UserLoginInfo())
                 this@LoginActivity.finish()
             }
             1 -> {
@@ -90,7 +105,7 @@ class LoginActivity : BaseActivity<LoginPresenter, LoginPresenter.ILoginView>() 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == 1){
-            val a = data!!.getStringExtra("account").toString()
+            val a = data?.getStringExtra("account").toString()
             account.setText(a)
         }
     }

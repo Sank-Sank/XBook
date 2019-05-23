@@ -7,3 +7,7 @@ package sank.xbook.base
  */
 
 class DrawerLayoutOpen
+
+class UserLoginInfo
+
+class UserLogOut

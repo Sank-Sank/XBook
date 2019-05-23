@@ -68,8 +68,6 @@ public class ScreenUtils {
 
     /**
      * 获取导航栏的高度
-     *
-     * @return
      */
     public static int getStatusBarHeight() {
         Resources resources = MyApp.Companion.getInstance().getResources();

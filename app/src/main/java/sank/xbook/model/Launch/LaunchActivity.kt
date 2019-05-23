@@ -30,7 +30,7 @@ class LaunchActivity : AppCompatActivity() {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setFlags(0x00000400, 0x00000400)
         setContentView(R.layout.activity_launch)
-        handler.sendEmptyMessageDelayed(1,500)
+        handler.sendEmptyMessageDelayed(1,3000)
     }
 
     override fun onDestroy() {

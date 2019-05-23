@@ -20,6 +20,7 @@ import sank.xbook.base.BookBean
 import sank.xbook.model.read_book.view.ReadActivity
 import android.view.inputmethod.InputMethodManager
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class SearchActivity : BaseActivity<SearchPresenter, SearchPresenter.ISearchView>(), View.OnClickListener , SearchPresenter.ISearchView {
     private lateinit var voice:ImageView
     private lateinit var searchText:EditText

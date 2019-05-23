@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/bookImage"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp" />
+
+    <TextView
+        android:id="@+id/bookName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:singleLine="true"
+        android:text="最牛寻宝人"
+        android:textColor="@color/weekbb_black"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/bookAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:singleLine="true"
+        android:text="最牛寻宝人"
+        android:textSize="14sp" />
+
+</LinearLayout>

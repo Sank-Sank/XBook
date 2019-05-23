@@ -6,6 +6,19 @@ object SPUtils {
     private const val FILENAME = "UserInfo"
 
     /**
+     * 判断是否已经登录
+     */
+    fun putUserIsLogin(context: Context, key: String, value: Boolean) {
+        val sharedPreferences = context.getSharedPreferences(FILENAME, Context.MODE_PRIVATE)
+        sharedPreferences.edit().putBoolean(key, value).apply()
+    }
+
+    fun getUserIsLogin(context: Context, key: String): Boolean {
+        val sharedPreferences = context.getSharedPreferences(FILENAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean(key, false)
+    }
+
+    /**
      * 存放用户名
      */
     fun putUserInfo(context: Context, key: String, value: String) {

@@ -1,5 +1,6 @@
 package sank.xbook.model.classify.Details
 
+import android.util.Log
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback

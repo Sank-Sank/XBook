@@ -13,7 +13,7 @@ import sank.xbook.base.MyApp;
  */
 
 public class SharedPreUtils {
-    private static final String SHARED_NAME = "WeYue_SP";
+    private static final String SHARED_NAME = "XBook_SP";
     private static SharedPreUtils sInstance;
     private static SharedPreferences sharedReadable;
     private static SharedPreferences.Editor sharedWritable;

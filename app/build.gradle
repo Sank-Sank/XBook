@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'org.greenrobot.greendao'
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -25,6 +27,15 @@ android {
     }
 }
 
+greendao {
+    //数据库版本号
+    schemaVersion 1
+    // 设置DaoMaster、DaoSession、Dao 包名
+    daoPackage 'sank.xbook.database.greendao'
+    //设置DaoMaster、DaoSession、Dao目录,请注意，这里路径用.不要用/
+    targetGenDir 'src/main/java'
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -38,4 +49,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.7'
     implementation files('libs/nineoldandroids-2.4.0.jar')
+    implementation 'org.greenrobot:greendao:3.2.2'
 }

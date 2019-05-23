@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="5dp"
             android:padding="6dp"
-            android:src="@drawable/back" />
+            android:src="@drawable/white_back" />
 
         <TextView
             android:id="@+id/classifyName"
@@ -39,13 +39,13 @@
             android:src="@drawable/search"/>
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <sank.xbook.Utils.view.RecyclerView.LoadRefreshRecyclerView
         android:id="@+id/classifyRecycler"
         android:layout_width="match_parent"
         android:layout_below="@+id/normal_title"
         android:layout_height="match_parent">
 
-    </android.support.v7.widget.RecyclerView>
+    </sank.xbook.Utils.view.RecyclerView.LoadRefreshRecyclerView>
 
     <TextView
         android:id="@+id/noNet"
@@ -55,5 +55,14 @@
         android:visibility="gone"
         android:textSize="18sp"
         android:text="@string/NoNet"/>
+
+    <TextView
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:textSize="18sp"
+        android:text="@string/Loading"/>
 
 </RelativeLayout>

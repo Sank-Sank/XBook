@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="3dp"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/clear"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:text="清空浏览记录"
+        android:textColor="@color/colorPrimary"
+        android:background="@drawable/shu_ru_kuang_bg"
+        android:layout_height="40dp" />
+
+    <TextView
+        android:id="@+id/cancel"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:text="取消"
+        android:textColor="@color/colorPrimary"
+        android:background="@drawable/shu_ru_kuang_bg"
+        android:layout_height="40dp" />
+
+</LinearLayout>

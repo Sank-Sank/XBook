@@ -5,7 +5,6 @@ import sank.xbook.base.IView
 
 class MainPresenter : BasePresenter<MainPresenter.IMainView>(){
 
-
     init {
 
     }

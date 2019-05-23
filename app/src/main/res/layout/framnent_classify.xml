@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -31,84 +32,110 @@
             android:id="@+id/SearchBook"
             android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:padding="6dp"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="5dp"
-            android:src="@drawable/search"/>
+            android:padding="6dp"
+            android:src="@drawable/search" />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/normal_title"
-        android:padding="20dp"
+        android:background="@color/color_black_23"
         android:orientation="vertical"
-        android:layout_height="match_parent">
+        android:padding="5dp">
 
-        <TextView
-            android:id="@+id/xuanhuan"
+        <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="玄幻"
-            android:textSize="20sp"
-            android:gravity="center"
-            android:background="@drawable/classify_bg"
-            android:layout_height="0dp" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/xiuzhen"
+            <TextView
+                android:id="@+id/xuanhuan"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@color/color_f1"
+                android:gravity="center"
+                android:text="玄幻"
+                android:textSize="20sp"
+                tools:ignore="NestedWeights" />
+
+            <TextView
+                android:id="@+id/xiuzhen"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@color/color_f1"
+                android:gravity="center"
+                android:text="修真"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:text="修真"
-            android:textSize="20sp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/classify_bg"
-            android:gravity="center"
-            android:layout_height="0dp" />
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/dushi"
+            <TextView
+                android:id="@+id/dushi"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@color/color_f1"
+                android:gravity="center"
+                android:text="都市"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/chuanyue"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@color/color_f1"
+                android:gravity="center"
+                android:text="穿越"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:text="都市"
-            android:textSize="20sp"
-            android:gravity="center"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/classify_bg"
-            android:layout_height="0dp" />
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/chuanyue"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:text="穿越"
-            android:textSize="20sp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/classify_bg"
-            android:gravity="center"
-            android:layout_height="0dp" />
-
-        <TextView
-            android:id="@+id/wangyou"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:text="网游"
-            android:textSize="20sp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/classify_bg"
-            android:gravity="center"
-            android:layout_height="0dp" />
+            <TextView
+                android:id="@+id/wangyou"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@color/color_f1"
+                android:gravity="center"
+                android:text="网游"
+                android:textSize="20sp" />
 
 
-        <TextView
-            android:id="@+id/kehuan"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/classify_bg"
-            android:text="科幻"
-            android:textSize="20sp"
-            android:gravity="center"
-            android:layout_height="0dp" />
+            <TextView
+                android:id="@+id/kehuan"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@color/color_f1"
+                android:gravity="center"
+                android:text="科幻"
+                android:textSize="20sp" />
+
+
+        </LinearLayout>
 
     </LinearLayout>
 

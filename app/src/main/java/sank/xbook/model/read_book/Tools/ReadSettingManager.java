@@ -4,7 +4,6 @@ package sank.xbook.model.read_book.Tools;
 import sank.xbook.model.read_book.page.PageView;
 
 /**
- * Created by newbiechen on 17-5-17.
  * 阅读器的配置管理
  */
 
@@ -82,7 +81,7 @@ public class ReadSettingManager {
     }
 
     public int getTextSize(){
-        return sharedPreUtils.getInt(SHARED_READ_TEXT_SIZE, ScreenUtils.spToPx(28));
+        return sharedPreUtils.getInt(SHARED_READ_TEXT_SIZE, ScreenUtils.spToPx(20));
     }
     public boolean isDefaultTextSize(){
         return sharedPreUtils.getBoolean(SHARED_READ_IS_TEXT_DEFAULT, false);

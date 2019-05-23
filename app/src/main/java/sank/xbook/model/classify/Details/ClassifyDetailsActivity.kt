@@ -4,21 +4,24 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import sank.xbook.R
 import sank.xbook.Utils.OnItemClickListeners
+import sank.xbook.Utils.view.RecyclerView.*
 import sank.xbook.base.BaseActivity
+import sank.xbook.base.BookBean
 import sank.xbook.base.TypeBean1
 import sank.xbook.base.TypeBean2
+import sank.xbook.model.prepare_book.PrepareActivity
 import sank.xbook.model.search_book.SearchActivity
 
 /**
  * 分类详情界面
  */
-class ClassifyDetailsActivity : BaseActivity<ClassifyDetailsPresenter, ClassifyDetailsPresenter.IClassifyDetailsView>() , ClassifyDetailsPresenter.IClassifyDetailsView {
+class ClassifyDetailsActivity : BaseActivity<ClassifyDetailsPresenter, ClassifyDetailsPresenter.IClassifyDetailsView>() , ClassifyDetailsPresenter.IClassifyDetailsView, RefreshRecyclerView.OnRefreshListener, LoadRefreshRecyclerView.OnLoadMoreListener {
     private lateinit var type:String    //类型
     private var page = 1                    //页数
     private var count = 0                   //总页数
@@ -26,7 +29,7 @@ class ClassifyDetailsActivity : BaseActivity<ClassifyDetailsPresenter, ClassifyD
     private lateinit var SearchBook:ImageView
     private lateinit var classifyName:TextView
     private lateinit var noNet:TextView
-    private lateinit var classifyRecycler:RecyclerView
+    private lateinit var classifyRecycler: LoadRefreshRecyclerView
     private var bookList:MutableList<TypeBean2>? = null
     private lateinit var classifyDetailsAdapter: ClassifyDetailsAdapter
 
@@ -48,16 +51,51 @@ class ClassifyDetailsActivity : BaseActivity<ClassifyDetailsPresenter, ClassifyD
         back.setOnClickListener { this.finish() }
         SearchBook.setOnClickListener { startActivity(Intent(this, SearchActivity::class.java)) }
         bookList = ArrayList()
+        //为adapter设置参数
+        classifyRecycler.addRefreshViewCreator(DefaultRefreshCreator())
+        classifyRecycler.addLoadViewCreator(DefaultLoadCreator())
+        classifyRecycler.setOnRefreshListener(this)
+        classifyRecycler.setOnLoadMoreListener(this)
+        classifyRecycler.addLoadingView(findViewById(R.id.loading))
         classifyRecycler.layoutManager = LinearLayoutManager(this)
         classifyRecycler.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        classifyDetailsAdapter = ClassifyDetailsAdapter(this, bookList!!, object : OnItemClickListeners {
-            override fun onItemClicked(view: View, position: Int) {
-                //TODO 分类打开书籍
-            }
-        })
+        classifyDetailsAdapter = ClassifyDetailsAdapter(this, bookList!!)
+        classifyDetailsAdapter.setOnItemClickListener { position ->
+            val intent = Intent(this@ClassifyDetailsActivity,PrepareActivity::class.java)
+            val b = Bundle()
+            //使用的时万能adapter所以position要减一
+            val typeBean = bookList!![position -1].fields
+            val book = BookBean(0,
+                    typeBean.book_name,
+                    typeBean.book_type,
+                    typeBean.book_author,
+                    typeBean.book_synopsis,
+                    typeBean.book_image,
+                    typeBean.update_time,null)
+            b.putSerializable("book",book)
+            intent.putExtra("bundle1",b)
+            startActivity(intent)
+        }
         classifyRecycler.adapter = classifyDetailsAdapter
-
         mPresenter?.fetch(type,page)
+    }
+
+    /**
+     * 下拉加载回调
+     */
+    override fun onLoad() {
+        if(page <= count){
+            page++
+            mPresenter?.fetch(type,page)
+        }
+    }
+
+    /**
+     * 上拉刷新回调
+     */
+    override fun onRefresh() {
+        bookList?.clear()
+        mPresenter?.fetch(type,1)
     }
 
     override fun onTypeSuccess(data: TypeBean1) {
@@ -66,11 +104,15 @@ class ClassifyDetailsActivity : BaseActivity<ClassifyDetailsPresenter, ClassifyD
         count = data.count
         bookList?.addAll(data.pages)
         classifyDetailsAdapter.notifyDataSetChanged()
+        classifyRecycler.onStopRefresh()
+        classifyRecycler.onStopLoad()
     }
 
     override fun onTypeFailure() {
         noNet.visibility = View.VISIBLE
         classifyRecycler.visibility = View.GONE
+        classifyRecycler.onStopRefresh()
+        classifyRecycler.onStopLoad()
     }
 
     override fun onDestroy() {

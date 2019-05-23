@@ -1,6 +1,7 @@
 package sank.xbook.model.read_book.Presenter
 
 import sank.xbook.base.BasePresenter
+import sank.xbook.base.ChapterContentBean
 import sank.xbook.base.ChaptersBean
 import sank.xbook.base.IView
 import sank.xbook.model.read_book.model.IReadModel
@@ -27,8 +28,23 @@ class ReadPresenter(iReadView :IReadView) : BasePresenter<ReadPresenter.IReadVie
         })
     }
 
+    fun getContent(id: Int){
+        model?.requestContent(id,object : IReadModel.OnLoadContentCompleteListener{
+            override fun onFailure() {
+                iReadView?.onRequestChapterContentFailure()
+            }
+
+            override fun onComplete(data: ChapterContentBean) {
+                iReadView?.onRequestChapterContentSuccess(data)
+            }
+
+        })
+    }
+
     interface IReadView : IView{
         fun requestSuccess(data: ChaptersBean)
         fun requestFailure()
+        fun onRequestChapterContentSuccess(data: ChapterContentBean)
+        fun onRequestChapterContentFailure()
     }
 }

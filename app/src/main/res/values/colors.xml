@@ -5,9 +5,11 @@
     <color name="colorAccent">#00BCD4</color>   //#D81B60
     <color name="white">#FFFFFF</color>
     <color name="font_color">#333333</color>    //字体颜色
+    <color name="read_font">#99ffffff</color>   //阅读界面菜单字体
 
     <color name="transparent">#00000000</color>
     <color name="black">#000000</color>
+    <color name="weekbb_black">#bb000000</color>
     <color name="week_black">#99000000</color>
     <color name="color_cec29c">#CEC29C</color>
     <color name="color_19">#191919</color>
@@ -32,6 +34,6 @@
     <color name="color_eee">#eeeeee</color>
     <color name="color_ccc">#cccccc</color>
     <color name="color_aeadad">#aeadad</color>
-    <color name="color_f1">#f1f1f1</color>
+    <color name="color_f1">#ffffff</color>
     <color name="color_80">#808080</color>
 </resources>

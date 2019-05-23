@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v4.widget.DrawerLayout
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -24,6 +25,11 @@ import sank.xbook.R
 import com.nineoldandroids.view.ViewHelper
 import kotlinx.android.synthetic.main.activity_main.*
 import sank.xbook.Utils.OnItemClickListeners
+import sank.xbook.Utils.SPUtils
+import sank.xbook.base.UserLogOut
+import sank.xbook.base.UserLoginInfo
+import sank.xbook.model.main.BrowsingHistory.BrowsingHistoryActivity
+import sank.xbook.model.main.cache.CacheActivity
 import sank.xbook.model.user.login.LoginActivity
 
 
@@ -51,11 +57,14 @@ class MainActivity : BaseActivity<MainPresenter, MainPresenter.IMainView>() , Vi
      * 侧滑菜单的布局
      */
     private lateinit var login:TextView
+    private lateinit var logOut:TextView
     private lateinit var about:ImageView
     private lateinit var setting:ImageView
     private lateinit var leftMenuRecycler:RecyclerView
     private var adapter : leftMenuAdapter? = null
     private var leftMenuList:MutableList<String> = ArrayList()
+    //判断用户是否已经登录
+    private var isLogin = false
 
     override fun createPresenter(): MainPresenter = MainPresenter()
 
@@ -86,6 +95,7 @@ class MainActivity : BaseActivity<MainPresenter, MainPresenter.IMainView>() , Vi
         classify = findViewById(R.id.classify)    //分类
         classify.setOnClickListener(this)
         login = findViewById(R.id.login)        //登录
+        logOut = findViewById(R.id.logOut)        //退出登录
         about = findViewById(R.id.about)        //关于
         setting = findViewById(R.id.setting)        //设置
         //侧滑菜单的recycler
@@ -109,21 +119,18 @@ class MainActivity : BaseActivity<MainPresenter, MainPresenter.IMainView>() , Vi
             }
         })
         //为左侧菜单添加数据
-        leftMenuList.add("我的钱包")
-        leftMenuList.add("我的收藏")
-        leftMenuList.add("隐私空间")
+        leftMenuList.add("浏览记录")
+        leftMenuList.add("缓存管理")
         leftMenuRecycler.layoutManager = LinearLayoutManager(this)
+        leftMenuRecycler.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         adapter = leftMenuAdapter(this, leftMenuList, object : OnItemClickListeners {
             override fun onItemClicked(view: View, position: Int) {
                 when (position) {
-                    0 -> {      //点击我的钱包
-
+                    0 -> {      //浏览记录
+                        this@MainActivity.startActivity(Intent(this@MainActivity, BrowsingHistoryActivity::class.java))
                     }
-                    1 -> {      //点击我的收藏
-
-                    }
-                    2 -> {      //点击隐私空间
-
+                    1 -> {      //缓存管理
+                        this@MainActivity.startActivity(Intent(this@MainActivity, CacheActivity::class.java))
                     }
                 }
             }
@@ -134,10 +141,16 @@ class MainActivity : BaseActivity<MainPresenter, MainPresenter.IMainView>() , Vi
             this@MainActivity.startActivity(Intent(this@MainActivity, LoginActivity::class.java))
         }
         about.setOnClickListener {
-
+            this@MainActivity.startActivity(Intent(this@MainActivity,AboutActivity::class.java))
         }
         setting.setOnClickListener {
-
+            this@MainActivity.startActivity(Intent(this@MainActivity,SettingActivity::class.java))
+        }
+        logOut.setOnClickListener {
+            logOut.visibility = View.GONE
+            login.text = "登录/注册"
+            SPUtils.clear(this)
+            EventBus.getDefault().post(UserLogOut())
         }
     }
 
@@ -161,6 +174,29 @@ class MainActivity : BaseActivity<MainPresenter, MainPresenter.IMainView>() , Vi
             drawerLayout.closeDrawer(main_left)
         }else{
             drawerLayout.openDrawer(main_left)
+        }
+    }
+
+    /**
+     * 用户登录后，广播
+     */
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    fun UserLoginInfo(message: UserLoginInfo){
+        logOut.visibility = View.VISIBLE
+        val name = SPUtils.getUserInfo(this,"name")
+        login.text = name
+    }
+
+    override fun onStart() {
+        super.onStart()
+        isLogin = SPUtils.getUserIsLogin(this,"login")
+        if(isLogin){
+            logOut.visibility = View.VISIBLE
+            val name = SPUtils.getUserInfo(this,"name")
+            login.text = name
+        }else{
+            logOut.visibility = View.GONE
+            login.text = "登录/注册"
         }
     }
 

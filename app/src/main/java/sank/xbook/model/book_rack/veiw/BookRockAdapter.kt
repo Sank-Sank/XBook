@@ -11,7 +11,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import sank.xbook.Utils.OnItemClickListeners
 import sank.xbook.R
-import sank.xbook.base.BookBean
+import sank.xbook.base.BookRackBean2
 
 /**
  *  @description
@@ -19,7 +19,7 @@ import sank.xbook.base.BookBean
  *  @Time 2019/3/14
  */
 class BookRockAdapter (private var contexts:Context,
-                       private var data:MutableList<BookBean>,
+                       private var data:MutableList<BookRackBean2>,
                        private var onItemClickListener: OnItemClickListeners)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
@@ -33,9 +33,9 @@ class BookRockAdapter (private var contexts:Context,
     override fun onBindViewHolder(p0: RecyclerView.ViewHolder, p1: Int) {
         with(p0 as BookRockHolder){
             bookItem.setOnClickListener { v ->  onItemClickListener.onItemClicked(v,p1)}
-            Glide.with(contexts).load(data[p1].book_image).into(bookImage)
-            bookName.text = data[p1].bookname
-            bookAuthor.text = data[p1].book_author
+            Glide.with(contexts).load(data[p1].image).into(bookImage)
+            bookName.text = data[p1].name
+            bookAuthor.text = data[p1].author
             updateTime.text = data[p1].update_time
         }
     }

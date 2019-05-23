@@ -8,40 +8,40 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
-import sank.xbook.base.BookBean
-import sank.xbook.base.MyApp.Companion.BASEURL
+import sank.xbook.base.BookRackBean1
+import sank.xbook.base.MyApp.Companion.USERBSEE
 
 
 interface IBookRackModel{
-    fun loadData(onLoadCompleteListener:OnLoadCompleteListener)
+    fun loadData(account:String,onLoadCompleteListener:OnLoadCompleteListener)
 
     interface OnLoadCompleteListener{
-        fun onComplete(data:BookBean)
+        fun onComplete(data: BookRackBean1)
         fun onFailure()
     }
 }
 
 interface BookAPI{
-    @GET("search")
-    fun getBook(@Query("name")
-                name:String): Call<BookBean>
+    @GET("searchbook")
+    fun getBook(@Query("account")
+                account:String): Call<BookRackBean1>
 }
 
 class BookRack : IBookRackModel{
-    override fun loadData(onLoadCompleteListener: IBookRackModel.OnLoadCompleteListener) {
+    override fun loadData(account:String,onLoadCompleteListener: IBookRackModel.OnLoadCompleteListener) {
         val retrofit: Retrofit = Retrofit.Builder()
-                .baseUrl(BASEURL)
+                .baseUrl(USERBSEE)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(OkHttpClient())
                 .build()
         val api = retrofit.create(BookAPI::class.java)
-        val call = api.getBook("步步莲劫")
-        call.enqueue(object : Callback<BookBean> {
-            override fun onFailure(call: Call<BookBean>, t: Throwable) {
+        val call = api.getBook(account)
+        call.enqueue(object : Callback<BookRackBean1> {
+            override fun onFailure(call: Call<BookRackBean1>, t: Throwable) {
                 onLoadCompleteListener.onFailure()
             }
 
-            override fun onResponse(call: Call<BookBean>, response: Response<BookBean>) {
+            override fun onResponse(call: Call<BookRackBean1>, response: Response<BookRackBean1>) {
                 response.body()?.let {
                     onLoadCompleteListener.onComplete(it)
                 }

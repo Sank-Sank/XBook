@@ -2,6 +2,7 @@ package sank.xbook.model.book_rack.presenter
 
 import sank.xbook.base.BasePresenter
 import sank.xbook.base.BookBean
+import sank.xbook.base.BookRackBean1
 import sank.xbook.base.IView
 import sank.xbook.model.book_rack.model.BookRack
 import sank.xbook.model.book_rack.model.IBookRackModel
@@ -16,20 +17,20 @@ class BookRackPresenter(iBookRackView: IBookRackView) : BasePresenter<BookRackPr
         model = BookRack()
     }
 
-    fun fetch(){
-        model?.loadData(object : IBookRackModel.OnLoadCompleteListener{
+    fun fetch(account:String){
+        model?.loadData(account,object : IBookRackModel.OnLoadCompleteListener{
             override fun onFailure() {
                 iBookRackView?.onFailure()
             }
 
-            override fun onComplete(data: BookBean) {
+            override fun onComplete(data: BookRackBean1) {
                 iBookRackView?.onSuccess(data)
             }
         })
     }
 
     interface IBookRackView : IView{
-        fun onSuccess(data:BookBean)
+        fun onSuccess(data: BookRackBean1)
         fun onFailure()
     }
 }

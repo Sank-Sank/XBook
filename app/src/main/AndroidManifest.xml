@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="sank.xbook">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -12,7 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".model.Launch.LaunchActivity">
+        <activity
+            android:name=".model.Launch.LaunchActivity"
+            tools:ignore="InnerclassSeparator">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,17 +25,42 @@
         </activity>
         <activity
             android:name=".model.main.MainActivity"
-            android:launchMode="singleTask"/>
-        <activity android:name=".model.read_book.view.ReadActivity"
-            android:launchMode="singleTask"/>
-        <activity android:name=".model.search_book.SearchActivity"
-            android:launchMode="singleTask"/>
-        <activity android:name=".model.classify.Details.ClassifyDetailsActivity"
-            android:launchMode="singleTask"/>
-        <activity android:name=".model.user.login.LoginActivity"
-            android:launchMode="singleTask"/>
-        <activity android:name=".model.user.register.RegisterActivity"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".model.read_book.view.ReadActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".model.search_book.SearchActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".model.classify.Details.ClassifyDetailsActivity"
+            android:launchMode="singleTask"
+            tools:ignore="InnerclassSeparator" />
+        <activity
+            android:name=".model.user.login.LoginActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".model.user.register.RegisterActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".model.main.AboutActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".model.main.SettingActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".model.main.cache.CacheActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".model.main.BrowsingHistory.BrowsingHistoryActivity"
+            android:launchMode="singleTask"
+            tools:ignore="InnerclassSeparator" />
+        <activity android:name=".model.prepare_book.PrepareActivity" />
+
+        <service
+            android:name=".model.main.cache.CacheService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

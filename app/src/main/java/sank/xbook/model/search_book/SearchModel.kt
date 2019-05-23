@@ -1,6 +1,5 @@
 package sank.xbook.model.search_book
 
-import android.util.Log
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback

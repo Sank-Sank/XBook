@@ -1,5 +1,7 @@
 package sank.xbook.base
 
+import java.io.Serializable
+
 
 data class BookBean(var status:Int,
                    var bookname:String,
@@ -7,7 +9,7 @@ data class BookBean(var status:Int,
                    var book_author:String,
                    var book_synopsis:String,
                    var book_image:String,
-                   var update_time:String, var message:String?)
+                   var update_time:String, var message:String?) : Serializable
 
 data class ChaptersBean(var status:Int,
                    var chapters:List<ChaptersDetailsBean>)
@@ -51,3 +53,19 @@ class TypeBean3(var book_name:String,
                 var book_synopsis:String,
                 var book_image:String,
                 var update_time:String)
+
+data class BookMallBean1(var status: Int,
+                         var data:List<BookMallBean2>)
+
+data class BookMallBean2(var tag:Int,
+                         var bookList:List<BookBean>?,
+                         var imageList:List<String>?)
+
+data class BookRackBean1(var status: Int,
+                         var books:List<BookRackBean2>?)
+
+data class BookRackBean2(var name:String,
+                         var author:String,
+                         var synopsis:String,
+                         var image:String,
+                         var update_time:String)
